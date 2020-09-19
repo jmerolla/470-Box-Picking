@@ -18,6 +18,7 @@ namespace MobileScanApp.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
+            ZXing.Net.Forms.Android.Platform.Init();
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
@@ -27,6 +28,8 @@ namespace MobileScanApp.Droid
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
+            //may need for scanning permissions
+            //global::ZXing.Net.Forms.Anseois.PermissionHandler.OnRequestPermissionResults(requestCodr, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
     }

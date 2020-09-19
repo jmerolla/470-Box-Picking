@@ -4,6 +4,6 @@
              x:Class="MobileScanApp.MainPage">
     <StackLayout Margin="20">
          <Button x:Name="scanOrderButton" HorizontalOptions="Center" VerticalOptions="Center" 
-            Text="Scan Order" Clicked="Button_Clicked"/>
+            Text="Scan Order" Clicked="NavigateToScanButton_Clicked"/>
     </StackLayout>
 </ContentPage>

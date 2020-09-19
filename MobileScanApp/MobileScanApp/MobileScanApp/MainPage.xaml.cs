@@ -33,6 +33,7 @@ namespace MobileScanApp
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
 
 
+            //test to get a feel for a potential logo header
             BoxView logoBoxview = new BoxView
             {
                 Color = Color.Accent,
@@ -50,9 +51,9 @@ namespace MobileScanApp
             };
         }
 
-        private void Button_Clicked(object sender, EventArgs e)
+        private async void NavigateToScanButton_Clicked(object sender, EventArgs e)
         {
-            DisplayAlert("Title", "Hello World", "OK");
+            await Navigation.PushAsync(new ScanPage());
         }
     }
 }
