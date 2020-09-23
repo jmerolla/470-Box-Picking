@@ -2,8 +2,11 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.MainPage">
-    <StackLayout Margin="20">
-         <Button x:Name="scanOrderButton" HorizontalOptions="Center" VerticalOptions="Center" 
+    <StackLayout>
+         <Button HorizontalOptions="Center" 
             Text="Scan Order" Clicked="NavigateToScanButton_Clicked"/>
+        
+        <Button HorizontalOptions="Center" 
+            Text="Pick a File" Clicked="pickFileButton_Clicked"/>
     </StackLayout>
 </ContentPage>

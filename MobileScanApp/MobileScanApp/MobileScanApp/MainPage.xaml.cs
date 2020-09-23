@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
+using Plugin.FilePicker;
+using Plugin.FilePicker.Abstractions;
 
 namespace MobileScanApp
 {
@@ -41,19 +43,38 @@ namespace MobileScanApp
                 HeightRequest = mainDisplayInfo.Height / 12,
             };
 
-            this.Content = new StackLayout
-            {
-                Children =
-               {
-                   logoBoxview,
-                   scanOrderButton
-               }
-            };
+         
         }
 
+        /* @author Jess Merolla
+         * 
+         * Navigates over to the ScanPage (for Scanning Barcodes)
+         * 
+         * !!!!!!!!!!!!TO-DO Remove this option from the main page on startup
+         * 
+         */
         private async void NavigateToScanButton_Clicked(object sender, EventArgs e)
         {
             await Navigation.PushAsync(new ScanPage());
+        }
+
+        /*
+         * @author Jess Merolla
+         * 
+         * Calls a file picker and allows the user to pick a file that will be used for parsing
+         * 
+         * !!!!!!!!!!!TO-DO add file type restrictions, do something with the file
+         */
+        private async void pickFileButton_Clicked(object sender, EventArgs e)
+        {
+            try
+            {
+                FileData filedata = await CrossFilePicker.Current.PickFile();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
