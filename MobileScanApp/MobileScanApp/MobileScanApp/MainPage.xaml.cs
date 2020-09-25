@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using Xamarin.Essentials;
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
+using PCLStorage;
 
 namespace MobileScanApp
 {
@@ -28,7 +29,9 @@ namespace MobileScanApp
      */
     public partial class MainPage : ContentPage
     {
-        
+        //uses PCLStorage to access cross platform filesystems
+        IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
+
         public MainPage()
         {
             InitializeComponent();
