@@ -70,6 +70,11 @@ namespace MobileScanApp
             try
             {
                 FileData filedata = await CrossFilePicker.Current.PickFile();
+
+                if (filedata != null)
+                {
+                    lbl.Text = filedata.FileName;
+                }
             }
             catch(Exception ex)
             {

@@ -8,5 +8,6 @@
         
         <Button HorizontalOptions="Center" 
             Text="Pick a File" Clicked="pickFileButton_Clicked"/>
+        <Label   HorizontalOptions="Center"  Text="File :" x:Name="lbl"/>
     </StackLayout>
 </ContentPage>

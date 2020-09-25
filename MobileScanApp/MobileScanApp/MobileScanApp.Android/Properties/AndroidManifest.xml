@@ -6,4 +6,7 @@
 	<!-- Permissions for accessing camera, needed to scan on Android -->
 	<uses-permission android:name="android.permission.CAMERA" />
 	<uses-permission android:name="android.permission.FLASHLIGHT" />
+  <!-- Permissions for accessing external device storage -->
+  <uses-permission android:name="android.permission.READ_EXTRERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTRERNAL_STORAGE" />
 </manifest>
