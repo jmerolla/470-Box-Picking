@@ -9,6 +9,7 @@ using Xamarin.Essentials;
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using PCLStorage;
+using System.IO;
 
 namespace MobileScanApp
 {
@@ -30,23 +31,15 @@ namespace MobileScanApp
     public partial class MainPage : ContentPage
     {
         //uses PCLStorage to access cross platform filesystems
-        IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
+       // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
         public MainPage()
         {
             InitializeComponent();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
+            // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
 
-            //test to get a feel for a potential logo header
-            BoxView logoBoxview = new BoxView
-            {
-                Color = Color.Accent,
-                WidthRequest = mainDisplayInfo.Width,
-                HeightRequest = mainDisplayInfo.Height / 12,
-            };
-
-         
         }
 
         /* @author Jess Merolla
@@ -62,18 +55,44 @@ namespace MobileScanApp
         }
 
         /*
-         * @author Jess Merolla
+         * @author: Jess Merolla
+         * @date: 9/25/2020
+         * @summary:
          * 
          * Calls a file picker and allows the user to pick a file that will be used for parsing
-         * 
-         * !!!!!!!!!!!TO-DO add file type restrictions, do something with the file
+         * on a button click
+         *
+         *@param: object sender, EventArgs e
+         *
+         *
+         * !!!!!!!!!!!TO-DO check file type restrictions, do something with the file
          */
-        private async void pickFileButton_Clicked(object sender, EventArgs e)
+        private async void PickFileButton_Clicked(object sender, EventArgs e)
         {
             try
             {
+                //Specifies csv file type for each platform
+                string fileType = null;
+                if (Device.RuntimePlatform == Device.Android)
+                {
+                    fileType = "csv";
+                }
+                if (Device.RuntimePlatform == Device.UWP)
+                {
+                    fileType = ".csv";
+                }
+
+                //Opens file picker
                 FileData filedata = await CrossFilePicker.Current.PickFile();
 
+                //Loop file picker until a .csv is selected
+                //skips if picking operation is cancelled
+                while (filedata!= null && filedata.FileName.Contains(fileType)!= true){
+                    lbl.Text = "File Type must be .csv";
+                    filedata = await CrossFilePicker.Current.PickFile();
+                }
+
+                //display file name
                 if (filedata != null)
                 {
                     lbl.Text = filedata.FileName;

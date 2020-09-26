@@ -15,6 +15,8 @@ using System.Threading.Tasks;
      *  Uses the PCLStorage package to generate a set of helpers to work
      *  with cross platform file systems
      *  
+     *  !!!!!!!!!!!TO-DO figure out if any of this works without crashing
+     *  
      */
     public static class PCLHelper
         {
@@ -50,7 +52,7 @@ using System.Threading.Tasks;
             public async static Task<IFolder> CreateFolder(this string folderName, IFolder rootFolder = null)
             {
                 IFolder folder = rootFolder ?? FileSystem.Current.LocalStorage;
-                folder = await folder.CreateFolderAsync(folderName, CreationCollisionOption.ReplaceExisting);
+                folder = await folder.CreateFolderAsync(folderName, CreationCollisionOption.FailIfExists);
                 return folder;
             }
 

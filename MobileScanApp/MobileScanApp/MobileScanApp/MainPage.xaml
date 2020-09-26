@@ -7,7 +7,7 @@
             Text="Scan Order" Clicked="NavigateToScanButton_Clicked"/>
         
         <Button HorizontalOptions="Center" 
-            Text="Pick a File" Clicked="pickFileButton_Clicked"/>
+            Text="Pick a File" Clicked="PickFileButton_Clicked"/>
         <Label   HorizontalOptions="Center"  Text="File :" x:Name="lbl"/>
     </StackLayout>
 </ContentPage>
