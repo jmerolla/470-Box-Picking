@@ -9,7 +9,10 @@ using Xamarin.Essentials;
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using PCLStorage;
+using CsvHelper;
 using System.IO;
+using ZXing;
+using System.Globalization;
 
 namespace MobileScanApp
 {
@@ -66,6 +69,10 @@ namespace MobileScanApp
          *
          *
          * !!!!!!!!!!!TO-DO check file type restrictions, do something with the file
+         * 
+         * 
+         * Graham added a call to ReadInCSV at the end of this method 9/27/2020 
+         * 
          */
         private async void PickFileButton_Clicked(object sender, EventArgs e)
         {
@@ -96,12 +103,49 @@ namespace MobileScanApp
                 if (filedata != null)
                 {
                     lbl.Text = filedata.FileName;
+
+                }
+                
+                //Prints all values of CSV to console
+                if(filedata != null)
+				{
+                    var filePath = filedata.FilePath;
+                    if (filedata != null)
+                    {
+                        lbl.Text = filedata.FileName;
+                        String csvdata = String.Join(", ", ReadInCSV(filePath).ToArray());
+                        System.Diagnostics.Debug.Write(csvdata);
+                    }
                 }
             }
             catch(Exception ex)
             {
                 Console.WriteLine(ex.Message);
             }
+        }
+        /*
+        * @author Graham
+        * 9/27/2020
+        * Reads in a CSV using a given path and gives a full list of values in a List<String>
+        * *To-do* Only get relevant data + more documentation
+        */
+        public static List<string> ReadInCSV(string absolutePath)
+        {
+            List<string> result = new List<string>();
+            string value;
+            using (TextReader fileReader = File.OpenText(absolutePath))
+            {
+                var csv = new CsvReader(fileReader, CultureInfo.InvariantCulture);
+                csv.Configuration.HasHeaderRecord = false;
+                while (csv.Read())
+                {
+                    for (int i = 0; csv.TryGetField<string>(i, out value); i++)
+                    {
+                        result.Add(value);
+                    }
+                }
+            }
+            return result;
         }
     }
 }
