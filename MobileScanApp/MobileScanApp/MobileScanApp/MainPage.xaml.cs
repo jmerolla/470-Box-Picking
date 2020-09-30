@@ -86,6 +86,7 @@ namespace MobileScanApp
                 }
                 if (Device.RuntimePlatform == Device.UWP)
                 {
+                  
                     fileType = ".csv";
                 }
 
@@ -99,27 +100,24 @@ namespace MobileScanApp
                     filedata = await CrossFilePicker.Current.PickFile();
                 }
 
-                //display file name
-                if (filedata != null)
-                {
-                    lbl.Text = filedata.FileName;
 
-                }
-                
                 //Prints all values of CSV to console
                 if(filedata != null)
 				{
+                    lbl.Text = filedata.FileName;
                     var filePath = filedata.FilePath;
                     if (filedata != null)
                     {
                         lbl.Text = filedata.FileName;
-                        String csvdata = String.Join(", ", ReadInCSV(filePath).ToArray());
+                        String csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
+                        lbl.Text = csvdata;
                     }
                 }
             }
             catch(Exception ex)
             {
+
                 Console.WriteLine(ex.Message);
             }
         }
@@ -129,23 +127,29 @@ namespace MobileScanApp
         * Reads in a CSV using a given path and gives a full list of values in a List<String>
         * *To-do* Only get relevant data + more documentation
         */
-        public static List<string> ReadInCSV(string absolutePath)
+        public static String ReadInCSV(FileData filedata)
         {
-            List<string> result = new List<string>();
-            string value;
-            using (TextReader fileReader = File.OpenText(absolutePath))
-            {
-                var csv = new CsvReader(fileReader, CultureInfo.InvariantCulture);
-                csv.Configuration.HasHeaderRecord = false;
-                while (csv.Read())
-                {
-                    for (int i = 0; csv.TryGetField<string>(i, out value); i++)
-                    {
-                        result.Add(value);
-                    }
-                }
-            }
-            return result;
+       
+            StreamReader reader = new StreamReader(filedata.GetStream());
+            string orderText = reader.ReadToEnd();
+            reader.Close();
+
+            return orderText;
+        }
+
+        /// @author Jessica Merolla
+        /// @date 9/29/2020
+        /// 
+        /// !!!!!!!!!!TODO pass CSV into list view, toggle visibility in xml if csv file has not been picked
+        /// 
+        /// <summary>
+        /// Passes the string of csv data into the list view
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new OrderListView());
         }
     }
 }

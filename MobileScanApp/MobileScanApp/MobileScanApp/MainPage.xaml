@@ -9,5 +9,7 @@
         <Button HorizontalOptions="Center" 
             Text="Pick a File" Clicked="PickFileButton_Clicked"/>
         <Label   HorizontalOptions="Center"  Text="File :" x:Name="lbl"/>
+        <Button HorizontalOptions="Center" 
+            Text="Confirm Order" Clicked="ConfirmOrderButton_Clicked"/>
     </StackLayout>
 </ContentPage>
