@@ -34,8 +34,9 @@ namespace MobileScanApp
     public partial class MainPage : ContentPage
     {
         //uses PCLStorage to access cross platform filesystems
-       // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
+        // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
+        String csvdata;     //make the csv info globally accessible
         public MainPage()
         {
             InitializeComponent();
@@ -109,7 +110,7 @@ namespace MobileScanApp
                     if (filedata != null)
                     {
                         lbl.Text = filedata.FileName;
-                        String csvdata = ReadInCSV(filedata);
+                        csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
                         lbl.Text = csvdata;
                     }
@@ -149,7 +150,7 @@ namespace MobileScanApp
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new OrderListView());
+            await Navigation.PushAsync(new OrderListView(csvdata));
         }
     }
 }

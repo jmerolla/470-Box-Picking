@@ -6,11 +6,11 @@ namespace MobileScanApp
 {
     class OrderItem
     {
-        public String Name;
-        public String Location;
-        public String barcodeID;
-        public int palletQty;
-        public int cartonQty;
-     
+        public String Name { get; set; }
+        public String Location { get; set; }
+        public String BarcodeID { get; set; }
+        public int PalletQty { get; set; }
+        public int CartonQty { get; set; }
+
     }
 }
