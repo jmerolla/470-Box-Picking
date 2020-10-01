@@ -22,6 +22,7 @@ namespace MobileScanApp
     {
         String barCodeRead;
         StackLayout stkMainlayout;
+        OrderListView OLV;
         public ScanPage()
         {
             stkMainlayout = new StackLayout
@@ -65,15 +66,16 @@ namespace MobileScanApp
          * TODO - Link the barcode numbers from the list.
          */
         public Boolean barCodeMatcher() {
+           // OLV.GetTabIndexesOnParentPage.
             var BarCodes = new List<string>()
                 {
-                   "5561600741",
-                   "1204403891",
+                   "655616007419", //without the 2 extra numbers.
+                   "012044038918", //using extra 2 numbers.
                 };
             //Testing to see if the result of the capture match our barcodes.
             //Loops through the array of barcodes scanned in. If true the pop up activates.
             for (int i = 0; i < BarCodes.Count; i++) {
-                if (barCodeRead.Contains(BarCodes[i]))
+                if (barCodeRead.Equals(BarCodes[i]))
                 {
                     return true;
                 }

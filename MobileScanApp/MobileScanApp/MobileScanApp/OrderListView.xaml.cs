@@ -39,7 +39,7 @@ namespace MobileScanApp
             {
                 Name = "Test1",
                 Location = "Aisle 1",
-                BarcodeID = "88874",
+                BarcodeID = "1204403891",
                 PalletQty = 1,
                 CartonQty = 5
             });
