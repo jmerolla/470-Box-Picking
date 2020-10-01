@@ -22,7 +22,6 @@ namespace MobileScanApp
     {
         String barCodeRead;
         StackLayout stkMainlayout;
-        OrderListView OLV;
         public ScanPage()
         {
             stkMainlayout = new StackLayout
