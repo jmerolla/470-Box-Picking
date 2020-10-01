@@ -13,6 +13,7 @@ using CsvHelper;
 using System.IO;
 using ZXing;
 using System.Globalization;
+using System.Collections.ObjectModel;
 
 namespace MobileScanApp
 {
@@ -37,6 +38,7 @@ namespace MobileScanApp
         // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
         String csvdata;     //make the csv info globally accessible
+        List<String> ItemsList = new List<String>();
         public MainPage()
         {
             InitializeComponent();
@@ -128,12 +130,12 @@ namespace MobileScanApp
         * Reads in a CSV using a given path and gives a full list of values in a List<String>
         * *To-do* Only get relevant data + more documentation
         */
-        public static String ReadInCSV(FileData filedata)
+        public String ReadInCSV(FileData filedata)
         {
-       
+
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
-            reader.Close();
+            ItemsList = orderText.Split(',').ToList();
 
             return orderText;
         }
@@ -150,7 +152,8 @@ namespace MobileScanApp
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new OrderListView(csvdata));
+            await Navigation.PushAsync(new OrderListView(ItemsList));
+
         }
     }
 }

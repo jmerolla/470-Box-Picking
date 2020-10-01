@@ -15,7 +15,7 @@ namespace MobileScanApp
     public partial class OrderListView : ContentPage
     {
         IList<OrderItem> OrderItems { get;  set; }
-        public string csvData;
+        public List<String> ParsedCSV;
 
 
         /// @author Jess Merolla
@@ -24,10 +24,10 @@ namespace MobileScanApp
         /// Passes in a string of csv data and parse it to populate a list of order items
         /// </summary>
         /// <param name="csvdata">String holding the csv data</param>
-        public OrderListView(string csvdata)
+        public OrderListView(List<String> items)
         {
             InitializeComponent();
-            csvData = csvdata;
+            ParsedCSV=items;
 
             //TODO would probably call a method for parsing here
             //maybe parse into multiple arrays and cycle through them in a loop
