@@ -22,8 +22,10 @@ namespace MobileScanApp
     {
         String barCodeRead;
         StackLayout stkMainlayout;
-        public ScanPage()
+        OrderItem scannableItem; //holds OrderItem currently being picked
+        public ScanPage(OrderItem scannableItem)
         {
+            this.scannableItem = scannableItem;
             stkMainlayout = new StackLayout
             {
                 HorizontalOptions = LayoutOptions.FillAndExpand,

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MobileScanApp
 {
-    class OrderItem
+    public class OrderItem
     {
         public String Name { get; set; }
         public String Location { get; set; }
