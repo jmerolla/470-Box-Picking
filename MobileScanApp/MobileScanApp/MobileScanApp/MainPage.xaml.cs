@@ -55,11 +55,7 @@ namespace MobileScanApp
          * !!!!!!!!!!!!TO-DO Remove this option from the main page on startup
          * 
          */
-        private async void NavigateToScanButton_Clicked(object sender, EventArgs e)
-        {
-            await Navigation.PushAsync(new ScanPage());
-        }
-
+        
         /*
          * @author: Jess Merolla
          * @date: 9/25/2020

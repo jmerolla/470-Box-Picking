@@ -3,9 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.MainPage">
     <StackLayout>
-         <Button HorizontalOptions="Center" 
-            Text="Scan Order" Clicked="NavigateToScanButton_Clicked"/>
-        
         <Button HorizontalOptions="Center" 
             Text="Pick a File" Clicked="PickFileButton_Clicked"/>
         <Label   HorizontalOptions="Center"  Text="File :" x:Name="lbl"/>

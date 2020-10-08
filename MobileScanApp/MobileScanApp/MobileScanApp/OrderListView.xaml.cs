@@ -14,7 +14,7 @@ namespace MobileScanApp
 
     public partial class OrderListView : ContentPage
     {
-        IList<OrderItem> OrderItems { get;  set; }
+        public IList<OrderItem> OrderItems { get;  set; }
         public List<String> ParsedCSV;
 
 
@@ -59,20 +59,21 @@ namespace MobileScanApp
         /// 
         /// @author Jess Merolla
         /// @date 9/30/2020
-        /// TODO modify to scan in item? Or to check it off?
+        /// 
+        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Used to access the currently selected OrderItem</param>
+        /// <param name="e">Event handler for item tapping</param>
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
-
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
+           
+            await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem));
 
             //Deselect Item
-            ((ListView)sender).SelectedItem = null;
+            //((ListView)sender).SelectedItem = null; //might be used later on
         }
     }
 }
