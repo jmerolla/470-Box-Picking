@@ -14,6 +14,7 @@ using System.IO;
 using ZXing;
 using System.Globalization;
 using System.Collections.ObjectModel;
+using System.Text.RegularExpressions;
 
 namespace MobileScanApp
 {
@@ -121,17 +122,36 @@ namespace MobileScanApp
             }
         }
         /*
-        * @author Graham
+        * @author Graham, Jess
         * 9/27/2020
         * Reads in a CSV using a given path and gives a full list of values in a List<String>
         * *To-do* Only get relevant data + more documentation
+        * 
+        * 
         */
         public String ReadInCSV(FileData filedata)
         {
 
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
-            ItemsList = orderText.Split(',').ToList();
+
+            string pattern = @"Ln,";
+            //string pattern = @"Ln\s"; For use with csvs made with current method (broken)
+            int matchInt = 1;
+
+            foreach (Match match in Regex.Matches(orderText, pattern))
+                matchInt = match.Index;
+
+
+            orderText= orderText.Substring(matchInt);
+
+            pattern = @"Base\sOrder";
+            foreach (Match match in Regex.Matches(orderText, pattern))
+                matchInt = match.Index;
+
+            orderText=orderText.Remove(matchInt);
+
+            ItemsList = orderText.Split(' ').ToList();
 
             return orderText;
         }
