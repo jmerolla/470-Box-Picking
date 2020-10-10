@@ -15,6 +15,7 @@ using ZXing;
 using System.Globalization;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
+using System.Security.Cryptography.X509Certificates;
 
 namespace MobileScanApp
 {
@@ -40,6 +41,7 @@ namespace MobileScanApp
 
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
+        string[,] orderArray;   //the csv successfully parsed 
         public MainPage()
         {
             InitializeComponent();
@@ -112,6 +114,7 @@ namespace MobileScanApp
                         csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
                         lbl.Text = csvdata;
+
                     }
                 }
             }
@@ -125,7 +128,9 @@ namespace MobileScanApp
         * @author Graham, Jess
         * 9/27/2020
         * Reads in a CSV using a given path and gives a full list of values in a List<String>
-        * *To-do* Only get relevant data + more documentation
+        * TODO: -pass parse array info into a list of OrderItems and pass those to OrderListView.xaml.cs
+        *       -make the parsing stuff into its own class that gets called in the read CSV method
+        *       -DONE 10/10 - Jess figure out how to minimize the blank spaces at the end of the array
         * 
         * 
         */
@@ -150,8 +155,31 @@ namespace MobileScanApp
                 matchInt = match.Index;
 
             orderText=orderText.Remove(matchInt);
+            orderText = orderText.Trim(',', ' ');
 
-            ItemsList = orderText.Split(' ').ToList();
+            ItemsList = orderText.Split(',').ToList();
+
+            int ORDER_COLUMNS = 12;
+
+            int k = 0; //itemsList iterator
+            orderArray = new string[ItemsList.Count/ORDER_COLUMNS, ORDER_COLUMNS];
+            for(int i =0; i< orderArray.GetLength(0); i++)
+            {
+                for (int j = 0; j < orderArray.GetLength(1); j++)
+                {
+                    if (k < ItemsList.Count)
+                    {
+                        //if you don't fill array until ItemsList has a valid item
+                        //*IF UNCOMMENTED, will not preserve original layout of the item sheet*
+                       // while (String.IsNullOrEmpty(ItemsList[k])) //!= null && ItemsList[k] != "")
+                        //{
+                          //  k++;
+                        //}
+                        orderArray[i, j] = ItemsList[k];
+                        k++;
+                    }
+                }
+            }
 
             return orderText;
         }
