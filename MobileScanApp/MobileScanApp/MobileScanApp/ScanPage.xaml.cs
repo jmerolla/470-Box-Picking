@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Xamarin.Forms;
+using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
 
 namespace MobileScanApp
@@ -21,6 +22,8 @@ namespace MobileScanApp
     public partial class ScanPage : ContentPage
     {
         String barCodeRead;
+        int qtyScanned = 0;
+        Boolean doneScanning = false;
         StackLayout stkMainlayout;
         OrderItem scannableItem; //holds OrderItem currently being picked
         public ScanPage(OrderItem scannableItem)
@@ -39,17 +42,37 @@ namespace MobileScanApp
                 HorizontalOptions = LayoutOptions.Center,
                 VerticalOptions = LayoutOptions.Center
             };
-            btnScan.Clicked += async (a, s) => {
-                scanPage = new ZXingScannerPage();
-                scanPage.OnScanResult += (result) => {
+            /**
+             *  var "options" allows you to choose what options you want your scanner to
+             * allow. Currently using it to AutoRotate and to "TryHarder" which 
+             * gets or sets a flag which cause a deeper look into the bitmap.This
+             * just makes it so the camera focuses on the barcode quicker. Though it
+             * does add room for misscans. 
+             */
+            var options = new MobileBarcodeScanningOptions
+            {
+                AutoRotate = true,
+                UseFrontCameraIfAvailable = false,
+                TryHarder = true
+            };
+            btnScan.Clicked += async (a, s) =>
+            {
+                scanPage = new ZXingScannerPage(options);
+                scanPage.OnScanResult += (result) =>
+                {
                     scanPage.IsScanning = false;
-                    Device.BeginInvokeOnMainThread(async () => {
+                    Device.BeginInvokeOnMainThread(async () =>
+                    {
                         await Navigation.PopModalAsync();
                         await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString(), "OK");
-                            barCodeRead = result.Text;
-                        if (barCodeMatcher()) //If the scan matches the barcodes, display the alert.
+                        barCodeRead = result.Text;
+                        if (barCodeMatcher()) //If the scan matches the barcode from the OrderItem list, display the alert.
                         {
-                            await DisplayAlert("Barcode Matches", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString(), "OK");
+                            await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + RemainingScans() + " , " + "QtyScanned: " + qtyScanned.ToString() , "OK");
+                        }       
+                        if (doneScanning)
+                        {
+                            await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed." , "OK");
                         }
                     });
                 };
@@ -57,31 +80,49 @@ namespace MobileScanApp
             };
             stkMainlayout.Children.Add(btnScan);
             Content = stkMainlayout;
-          
+
         }
 
         /**
          * Edited by Spencer Dusi 9-29-20.
-         * This Class takes the barcodes and test to see if it matches the one on the sheet.
+         * This Method takes the barcodes and test to see if it matches the one on the sheet.
          * If it matches we set our boolean true allowing the pop up to happen.
-         * TODO - Link the barcode numbers from the list.
+         * DONE - Link the barcode numbers from the list.
          */
-        public Boolean barCodeMatcher() {
-           // OLV.GetTabIndexesOnParentPage.
-            var BarCodes = new List<string>()
+        public Boolean barCodeMatcher()
+        {
+            if (scannableItem.BarcodeID == barCodeRead)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /**
+         * Edited by Spencer Dusi 10-12-20.
+         * This method takes the quantity ordered for the specific item
+         * and each time the item is scanned it adds to the counter until
+         * it has been scanned the amount of times the quantity desires.
+         */
+        public int RemainingScans()
+        {
+            int qtyOrdered = scannableItem.QtyOrdered;
+            if (doneScanning != true)
+            {
+                qtyScanned++;
+            }   
+            if (qtyOrdered >= qtyScanned)
+            {
+                if (qtyOrdered == qtyScanned)
                 {
-                   "655616007419", //without the 2 extra numbers.
-                   "012044038918", //using extra 2 numbers.
-                };
-            //Testing to see if the result of the capture match our barcodes.
-            //Loops through the array of barcodes scanned in. If true the pop up activates.
-            for (int i = 0; i < BarCodes.Count; i++) {
-                if (barCodeRead.Equals(BarCodes[i]))
+                    doneScanning = true;
+                }
+                else
                 {
-                    return true;
+                    doneScanning = false;
                 }
             }
-                return false;
+            return qtyOrdered - qtyScanned;
         }
     }
 }

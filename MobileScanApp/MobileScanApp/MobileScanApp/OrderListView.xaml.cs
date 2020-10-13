@@ -35,21 +35,27 @@ namespace MobileScanApp
 
             OrderItems = new List<OrderItem>();
             //TODO replace testers with parsed csv info
+            //This is a fake example using my deoderant barcode 
             OrderItems.Add(new OrderItem
             {
-                Name = "Test1",
-                Location = "Aisle 1",
-                BarcodeID = "1204403891",
+                Name = "1134HP Acrylic 0.5 mil foil",
+                Location = "r5",
+                BarcodeID = "012044038918",
                 PalletQty = 1,
-                CartonQty = 5
+                CartonQty = 5,
+                QtyOrdered = 2,
+                QtyOpen = 2
             });
+            //This is an actual example from the box from AD
             OrderItems.Add(new OrderItem
             {
-                Name = "Test2",
-                Location = "Aisle 2",
-                BarcodeID = "11111",
+                Name = "0808HP Acrylic 2.0 mil foil",
+                Location = "s16",
+                BarcodeID = "655616007419",
                 PalletQty = 2,
-                CartonQty = 10
+                CartonQty = 10,
+                QtyOrdered = 432,
+                QtyOpen = 432
             });
             MyListView.ItemsSource = OrderItems;
             //BindingContext = this;
