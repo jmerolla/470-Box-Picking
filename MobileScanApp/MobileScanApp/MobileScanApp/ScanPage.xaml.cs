@@ -24,6 +24,7 @@ namespace MobileScanApp
         String barCodeRead;
         int qtyScanned = 0;
         Boolean doneScanning = false;
+        private bool _isScanning = true;
         StackLayout stkMainlayout;
         OrderItem scannableItem; //holds OrderItem currently being picked
 
@@ -54,7 +55,7 @@ namespace MobileScanApp
             {
                 AutoRotate = true,
                 UseFrontCameraIfAvailable = false,
-                TryHarder = true
+                TryHarder = false
             };
             btnScan.Clicked += async (a, s) =>
             {
@@ -63,18 +64,23 @@ namespace MobileScanApp
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString(), "OK");
-                        barCodeRead = result.Text;
-                        if (barCodeMatcher()) //If the scan matches the barcode from the OrderItem list, display the alert.
+                        if (_isScanning)
                         {
-                            scanPage.IsScanning = true; //keep scanning until we scan the quantity set.
-                            await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + RemainingScans() + " , " + "QtyScanned: " + qtyScanned.ToString() , "OK");
-                        }       
-                        if (doneScanning)
-                        {
-                            scanPage.IsScanning = false; //stop scanning once we have scanned quantity amount.
-                            await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
-                            await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed." , "OK");
+                            _isScanning = false;
+                            scanPage.IsAnalyzing = false;
+                            await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString(), "OK");
+                            barCodeRead = result.Text;
+                            if (barCodeMatcher()) //If the scan matches the barcode from the OrderItem list, display the alert.
+                            {
+                                await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + RemainingScans() + " , " + "QtyScanned: " + qtyScanned.ToString(), "OK");
+                                if (doneScanning)
+                                {
+                                    await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
+                                    await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed.", "OK");
+                                }
+                            }
+                            scanPage.IsAnalyzing = true;
+                            _isScanning = true;
                         }
                     });
                 };
