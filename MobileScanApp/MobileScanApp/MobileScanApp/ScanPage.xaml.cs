@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
@@ -26,6 +26,7 @@ namespace MobileScanApp
         Boolean doneScanning = false;
         StackLayout stkMainlayout;
         OrderItem scannableItem; //holds OrderItem currently being picked
+
         public ScanPage(OrderItem scannableItem)
         {
             this.scannableItem = scannableItem;
@@ -60,18 +61,19 @@ namespace MobileScanApp
                 scanPage = new ZXingScannerPage(options);
                 scanPage.OnScanResult += (result) =>
                 {
-                    scanPage.IsScanning = false;
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        await Navigation.PopModalAsync();
                         await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString(), "OK");
                         barCodeRead = result.Text;
                         if (barCodeMatcher()) //If the scan matches the barcode from the OrderItem list, display the alert.
                         {
+                            scanPage.IsScanning = true; //keep scanning until we scan the quantity set.
                             await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + RemainingScans() + " , " + "QtyScanned: " + qtyScanned.ToString() , "OK");
                         }       
                         if (doneScanning)
                         {
+                            scanPage.IsScanning = false; //stop scanning once we have scanned quantity amount.
+                            await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
                             await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed." , "OK");
                         }
                     });
