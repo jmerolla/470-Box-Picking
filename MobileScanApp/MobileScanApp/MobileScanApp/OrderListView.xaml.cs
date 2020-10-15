@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace MobileScanApp
@@ -16,7 +17,6 @@ namespace MobileScanApp
     {
         public IList<OrderItem> OrderItems { get;  set; }
         public List<String> ParsedCSV;
-
 
         /// @author Jess Merolla
         /// @date   9/30/2020
@@ -75,11 +75,10 @@ namespace MobileScanApp
         {
             if (e.Item == null)
                 return;
-           
-            await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem));
 
-            //Deselect Item
-            //((ListView)sender).SelectedItem = null; //might be used later on
+        await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem));
+        //Deselect Item
+        //((ListView)sender).SelectedItem = null; //might be used later on
         }
     }
 }
