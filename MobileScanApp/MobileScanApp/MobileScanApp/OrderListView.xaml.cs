@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace MobileScanApp
@@ -14,9 +15,8 @@ namespace MobileScanApp
 
     public partial class OrderListView : ContentPage
     {
-        IList<OrderItem> OrderItems { get;  set; }
+        public IList<OrderItem> OrderItems { get;  set; }
         public List<String> ParsedCSV;
-
 
         /// @author Jess Merolla
         /// @date   9/30/2020
@@ -35,21 +35,27 @@ namespace MobileScanApp
 
             OrderItems = new List<OrderItem>();
             //TODO replace testers with parsed csv info
+            //This is a fake example using my deoderant barcode 
             OrderItems.Add(new OrderItem
             {
-                Name = "Test1",
-                Location = "Aisle 1",
-                BarcodeID = "1204403891",
+                Name = "1134HP Acrylic 0.5 mil foil",
+                Location = "r5",
+                BarcodeID = "012044038918",
                 PalletQty = 1,
-                CartonQty = 5
+                CartonQty = 5,
+                QtyOrdered = 2,
+                QtyOpen = 2
             });
+            //This is an actual example from the box from AD
             OrderItems.Add(new OrderItem
             {
-                Name = "Test2",
-                Location = "Aisle 2",
-                BarcodeID = "11111",
+                Name = "0808HP Acrylic 2.0 mil foil",
+                Location = "s16",
+                BarcodeID = "655616007419",
                 PalletQty = 2,
-                CartonQty = 10
+                CartonQty = 10,
+                QtyOrdered = 432,
+                QtyOpen = 432
             });
             MyListView.ItemsSource = OrderItems;
             //BindingContext = this;
@@ -59,20 +65,20 @@ namespace MobileScanApp
         /// 
         /// @author Jess Merolla
         /// @date 9/30/2020
-        /// TODO modify to scan in item? Or to check it off?
+        /// 
+        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
         /// 
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        /// <param name="sender">Used to access the currently selected OrderItem</param>
+        /// <param name="e">Event handler for item tapping</param>
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
                 return;
 
-            await DisplayAlert("Item Tapped", "An item was tapped.", "OK");
-
-            //Deselect Item
-            ((ListView)sender).SelectedItem = null;
+        await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem));
+        //Deselect Item
+        //((ListView)sender).SelectedItem = null; //might be used later on
         }
     }
 }

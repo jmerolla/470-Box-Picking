@@ -4,13 +4,14 @@ using System.Text;
 
 namespace MobileScanApp
 {
-    class OrderItem
+    public class OrderItem
     {
         public String Name { get; set; }
         public String Location { get; set; }
         public String BarcodeID { get; set; }
         public int PalletQty { get; set; }
         public int CartonQty { get; set; }
-
+        public int QtyOrdered { get; set; }
+        public int QtyOpen { get; set; }
     }
 }
