@@ -41,7 +41,10 @@ namespace MobileScanApp
 
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
+
+        CSVHandler orderItemParser = new CSVHandler();    //used to parse the csv order sheets
         string[,] orderArray;   //the csv successfully parsed 
+        public List<OrderItem> OrderItems { get; set; } //used to pass the list of items
         public MainPage()
         {
             InitializeComponent();
@@ -129,7 +132,7 @@ namespace MobileScanApp
         * 9/27/2020
         * Reads in a CSV using a given path and gives a full list of values in a List<String>
         * TODO: -pass parse array info into a list of OrderItems and pass those to OrderListView.xaml.cs
-        *       -make the parsing stuff into its own class that gets called in the read CSV method
+        *       -DONE 10/15 -make the parsing stuff into its own class that gets called in the read CSV method
         *       -DONE 10/10 - Jess figure out how to minimize the blank spaces at the end of the array
         * 
         * 
@@ -140,47 +143,15 @@ namespace MobileScanApp
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
 
-            string pattern = @"Ln,";
-            //string pattern = @"Ln\s"; For use with csvs made with current method (broken)
-            int matchInt = 1;
-
-            foreach (Match match in Regex.Matches(orderText, pattern))
-                matchInt = match.Index;
-
-
-            orderText= orderText.Substring(matchInt);
-
-            pattern = @"Base\sOrder";
-            foreach (Match match in Regex.Matches(orderText, pattern))
-                matchInt = match.Index;
-
-            orderText=orderText.Remove(matchInt);
-            orderText = orderText.Trim(',', ' ');
+           orderText =  orderItemParser.getOrderItemInfo(orderText);
 
             ItemsList = orderText.Split(',').ToList();
-
             int ORDER_COLUMNS = 12;
 
-            int k = 0; //itemsList iterator
-            orderArray = new string[ItemsList.Count/ORDER_COLUMNS, ORDER_COLUMNS];
-            for(int i =0; i< orderArray.GetLength(0); i++)
-            {
-                for (int j = 0; j < orderArray.GetLength(1); j++)
-                {
-                    if (k < ItemsList.Count)
-                    {
-                        //if you don't fill array until ItemsList has a valid item
-                        //*IF UNCOMMENTED, will not preserve original layout of the item sheet*
-                       // while (String.IsNullOrEmpty(ItemsList[k])) //!= null && ItemsList[k] != "")
-                        //{
-                          //  k++;
-                        //}
-                        orderArray[i, j] = ItemsList[k];
-                        k++;
-                    }
-                }
-            }
+            orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
 
+            OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
+            
             return orderText;
         }
 
