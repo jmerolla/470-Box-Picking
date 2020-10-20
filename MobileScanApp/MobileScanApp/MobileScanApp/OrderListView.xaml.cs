@@ -82,8 +82,7 @@ namespace MobileScanApp
             {
                 await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
             }
-        //Deselect Item
-        //((ListView)sender).SelectedItem = null; //might be used later on
+        ((ListView)sender).SelectedItem = null; //Deselect Item
         }
     }
 }
