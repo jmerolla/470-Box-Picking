@@ -63,7 +63,7 @@ namespace MobileScanApp
 
         /// <summary>
         /// 
-        /// @author Jess Merolla
+        /// @author Jess Merolla, Graham Hallman-Taylor
         /// @date 9/30/2020
         /// 
         /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
@@ -74,9 +74,14 @@ namespace MobileScanApp
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (e.Item == null)
+            {
+                await DisplayAlert("Item already completed", "Enough of this item has already been scanned in for this order.", "OK");
                 return;
-
-        await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem));
+            }
+            else
+            {
+                await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
+            }
         //Deselect Item
         //((ListView)sender).SelectedItem = null; //might be used later on
         }

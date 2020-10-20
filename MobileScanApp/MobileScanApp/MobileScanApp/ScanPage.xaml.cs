@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Xamarin.Forms;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
@@ -6,7 +7,7 @@ using ZXing.Net.Mobile.Forms;
 namespace MobileScanApp
 {
     /*
-     *  @author:    Jess Merolla
+     *  @author:    Jess Merolla, Graham Hallman-Taylor
      *  @date:      9/18/2020
      *  @summary:
      *
@@ -31,9 +32,11 @@ namespace MobileScanApp
         public StackLayout stkMainlayout; //Our ScanPage's layout format
         public OrderItem scannableItem; //holds OrderItem currently being picked
         ZXingScannerPage scanPage;
+        public IList<OrderItem> OIList;
 
-        public ScanPage(OrderItem scannableItem)
+        public ScanPage(OrderItem scannableItem, IList<OrderItem> list)
         {
+            OIList = list;
             this.scannableItem = scannableItem; //Taking the OrderItem from OrderListView.
             /**
              * Creates a new layout for our ScanPage screen. Things added to this layout
@@ -98,6 +101,8 @@ namespace MobileScanApp
                                     await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
                                     await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed.", "OK"); //Alert to know we are done scanning an item.                                
                                     await Navigation.PopAsync(); //Takes us back to the page where we choose which item we are about to scan.
+                                    OIList.Remove(scannableItem); //Removes this item from the list since the correct quantity of it has now been scanned
+                                    OIList = list; //Replaces the old list with the new list that does not contain the finished item 
                                 }
                             }
                             else
