@@ -16,7 +16,6 @@ namespace MobileScanApp
     public partial class OrderListView : ContentPage
     {
         public IList<OrderItem> OrderItems { get;  set; }
-        public List<String> ParsedCSV;
 
         /// @author Jess Merolla
         /// @date   9/30/2020
@@ -24,18 +23,13 @@ namespace MobileScanApp
         /// Passes in a string of csv data and parse it to populate a list of order items
         /// </summary>
         /// <param name="csvdata">String holding the csv data</param>
-        public OrderListView(List<String> items)
+        public OrderListView(List<OrderItem> OrderItems)
         {
             InitializeComponent();
-            ParsedCSV=items;
 
-            //TODO would probably call a method for parsing here
-            //maybe parse into multiple arrays and cycle through them in a loop
-            //filling up OrderItems?
-
-            OrderItems = new List<OrderItem>();
-            //TODO replace testers with parsed csv info
-            //This is a fake example using my deoderant barcode 
+            this.OrderItems = OrderItems;
+            //This is a fake example using my deoderant barcode
+            //REMOVE THESE WHEN TESTING IS DONE!!!
             OrderItems.Add(new OrderItem
             {
                 Name = "1134HP Acrylic 0.5 mil foil",
@@ -57,6 +51,8 @@ namespace MobileScanApp
                 QtyOrdered = 432,
                 QtyOpen = 432
             });
+
+            
             MyListView.ItemsSource = OrderItems;
             //BindingContext = this;
         }
