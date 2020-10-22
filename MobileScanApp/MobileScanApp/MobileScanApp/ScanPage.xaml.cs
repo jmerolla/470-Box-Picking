@@ -72,6 +72,7 @@ namespace MobileScanApp
 
             var overlay = new ZXingDefaultOverlay();
             overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString();
+            overlay.BottomText = "Located in Section: " + scannableItem.Location;
             overlay.ShowFlashButton = true;
             overlay.FlashButtonClicked += (t, ed) =>
             {
@@ -82,8 +83,8 @@ namespace MobileScanApp
             btnScan.Clicked += async (a, s) =>
             {
                 scanPage = new ZXingScannerPage(options, overlay);
-                //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
-                scanPage.OnScanResult += (result) =>
+        //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
+        scanPage.OnScanResult += (result) =>
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {

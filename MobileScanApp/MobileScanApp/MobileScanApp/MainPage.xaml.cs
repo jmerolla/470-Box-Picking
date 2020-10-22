@@ -61,7 +61,7 @@ namespace MobileScanApp
          * !!!!!!!!!!!!TO-DO Remove this option from the main page on startup
          * 
          */
-        
+
         /*
          * @author: Jess Merolla
          * @date: 9/25/2020
