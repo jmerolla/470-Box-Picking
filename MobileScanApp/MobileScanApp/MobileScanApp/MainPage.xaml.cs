@@ -158,7 +158,7 @@ namespace MobileScanApp
         /// @author Jessica Merolla
         /// @date 9/29/2020
         /// 
-        /// !!!!!!!!!!TODO pass CSV into list view, toggle visibility in xml if csv file has not been picked
+        /// !!!!!!!!!!Toggle visibility in xml if csv file has not been picked
         /// 
         /// <summary>
         /// Passes the string of csv data into the list view
@@ -167,7 +167,7 @@ namespace MobileScanApp
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new OrderListView(ItemsList));
+            await Navigation.PushAsync(new OrderListView(OrderItems));
 
         }
     }

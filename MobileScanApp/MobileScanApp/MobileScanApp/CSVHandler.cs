@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using Xamarin.Forms;
+using ZXing.QrCode.Internal;
 
 namespace MobileScanApp
 {
@@ -79,18 +81,35 @@ namespace MobileScanApp
         public List<OrderItem> arrayToOrderItemList(string[,] orderArray)
         {
             List<OrderItem> OrderItems = new List<OrderItem>();
-            //TODO replace testers with parsed csv info
-            //This is a fake example using my deoderant barcode 
-            OrderItems.Add(new OrderItem
+            Regex rx = new Regex(@"\r\n[0-9]+",
+                       RegexOptions.Compiled | RegexOptions.Singleline);
+            for (int i = 0; i < orderArray.GetLength(0); i++)
             {
-                Name = "1134HP Acrylic 0.5 mil foil",
-                Location = "r5",
-                BarcodeID = "012044038918",
-                PalletQty = 1,
-                CartonQty = 5,
-                QtyOrdered = 2,
-                QtyOpen = 2
-            });
+                if(i%2 != 0) {  //odd row
+                    if (rx.IsMatch(orderArray[i, 0])){  //make sure there is an item in this row
+
+                        try
+                        {
+                            OrderItems.Add(new OrderItem
+                            {
+                                Name = orderArray[i + 1, 1],
+                                Location = orderArray[i, 11],
+                                BarcodeID = orderArray[i, 1],
+
+                                PalletQty = Int32.Parse(orderArray[i, 8]),
+                                CartonQty = Int32.Parse(orderArray[i, 9]),
+                                QtyOrdered = Int32.Parse(orderArray[i, 3]),
+                                QtyOpen = decimal.Parse(orderArray[i, 4])
+                            });
+                        }
+                        catch (FormatException e)
+                        {
+                            Console.WriteLine(e.Message);
+                        }
+                        
+                    }
+                }
+            }
 
             return OrderItems;
         }

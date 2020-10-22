@@ -12,6 +12,6 @@ namespace MobileScanApp
         public int PalletQty { get; set; }
         public int CartonQty { get; set; }
         public int QtyOrdered { get; set; }
-        public int QtyOpen { get; set; }
+        public decimal QtyOpen { get; set; }
     }
 }
