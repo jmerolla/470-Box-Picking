@@ -11,6 +11,9 @@ using Xamarin.Forms.Xaml;
 
 namespace MobileScanApp
 {
+    //Added headings to the listview in OrderListView.xaml
+    //TODO: Qty opened not appearing    
+    //Edited: 10/25/20 by Spencer Dusi
     [XamlCompilation(XamlCompilationOptions.Compile)]
 
     public partial class OrderListView : ContentPage

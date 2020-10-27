@@ -2,10 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.OrderListView">
-    
-//Added headings to the listview. 
-//TODO: Qty opened not appearing    
-//Edited: 10/25/20     
+        
 <ListView x:Name="MyListView"
             ItemsSource="{Binding OrderItems}"
             ItemTapped="Handle_ItemTapped"
@@ -34,31 +31,30 @@
                 </Grid>
             </StackLayout>
         </ListView.Header>
-        
-    <ListView.ItemTemplate>
-      <DataTemplate>
-        <ViewCell>
-          <Grid>
-            <Grid.ColumnDefinitions>
-               <ColumnDefinition Width="0.3*" />
-               <ColumnDefinition Width="0.2*" />
-               <ColumnDefinition Width="0.2*" />
-               <ColumnDefinition Width="0.1*" />
-               <ColumnDefinition Width="0.1*" />
-               <ColumnDefinition Width="0.1*" />
-               <ColumnDefinition Width="0.1*" />
-            </Grid.ColumnDefinitions>
-            <Label Text="{Binding Name}" FontAttributes="Bold" />
-            <Label Grid.Column="1" Text="{Binding Location}" />
-            <Label Grid.Column="2" Text="{Binding BarcodeID}" />
-            <Label Grid.Column="3" Text="{Binding PalletQty}" />
-            <Label Grid.Column="4" Text="{Binding CartonQty}"/>
-            <Label Grid.Column="5" Text="{Binding QtyOrdered}" />
-            <Label Grid.Column="6" Text="{Binding QtyOpened}" HorizontalTextAlignment="End" />
-          </Grid>
-         </ViewCell>
-      </DataTemplate>
-    </ListView.ItemTemplate>
-   
-  </ListView>
+
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <ViewCell>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.3*" />
+                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                        </Grid.ColumnDefinitions>
+                        <Label Text="{Binding Name}" FontAttributes="Bold" />
+                        <Label Grid.Column="1" Text="{Binding Location}" />
+                        <Label Grid.Column="2" Text="{Binding BarcodeID}" />
+                        <Label Grid.Column="3" Text="{Binding PalletQty}" />
+                        <Label Grid.Column="4" Text="{Binding CartonQty}"/>
+                        <Label Grid.Column="5" Text="{Binding QtyOrdered}" />
+                        <Label Grid.Column="6" Text="{Binding QtyOpened}" HorizontalTextAlignment="End" />
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
 </ContentPage>
