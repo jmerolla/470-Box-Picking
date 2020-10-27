@@ -2,8 +2,16 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.OrderListView">
-        
-<ListView x:Name="MyListView"
+
+    <NavigationPage.TitleView>
+        <Label Text="Click on an item to start scanning" 
+               HorizontalOptions="Center"
+               VerticalOptions="Center"
+               FontSize="Title">
+        </Label>
+    </NavigationPage.TitleView>
+    <ContentPage.Content>
+    <ListView x:Name="MyListView"
             ItemsSource="{Binding OrderItems}"
             ItemTapped="Handle_ItemTapped"
             CachingStrategy="RecycleElement">
@@ -27,7 +35,7 @@
                 <Label Grid.Column="3" Text="Pallet Qty" />
                 <Label Grid.Column="4" Text="Carton Qty" />
                 <Label Grid.Column="5" Text="Qty Ordered" />
-                <Label Grid.Column="6" Text="Qty Opened" />
+                <Label Grid.Column="6" Text="Qty Open" />
                 </Grid>
             </StackLayout>
         </ListView.Header>
@@ -51,10 +59,11 @@
                         <Label Grid.Column="3" Text="{Binding PalletQty}" />
                         <Label Grid.Column="4" Text="{Binding CartonQty}"/>
                         <Label Grid.Column="5" Text="{Binding QtyOrdered}" />
-                        <Label Grid.Column="6" Text="{Binding QtyOpened}" HorizontalTextAlignment="End" />
+                        <Label Grid.Column="6" Text="{Binding QtyOpen}"/>
                     </Grid>
                 </ViewCell>
             </DataTemplate>
         </ListView.ItemTemplate>
     </ListView>
+    </ContentPage.Content>
 </ContentPage>

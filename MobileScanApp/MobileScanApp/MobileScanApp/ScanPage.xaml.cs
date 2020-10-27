@@ -70,6 +70,9 @@ namespace MobileScanApp
                 TryHarder = false
             };
 
+            NavigationPage.SetHasNavigationBar(this, false); //gets rid of random gray NavBar.
+            NavigationPage.SetHasBackButton(this, false); //gets rid of back button while scanning.
+
             var overlay = new ZXingDefaultOverlay();
             overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString();
             overlay.BottomText = "Located in Section: " + scannableItem.Location;
@@ -117,7 +120,7 @@ namespace MobileScanApp
                 await Navigation.PushModalAsync(scanPage); //Takes us to the page where we see what the camera is picking up
             };
             stkMainlayout.Children.Add(btnScan); //adds button to our screen
-            Content = stkMainlayout; //sets our content in the .cs instead of .xaml
+            this.Content = stkMainlayout; //sets our content in the .cs instead of .xaml
         }
 
         /**

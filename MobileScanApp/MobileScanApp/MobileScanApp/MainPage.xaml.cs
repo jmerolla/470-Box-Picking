@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace MobileScanApp
 {
@@ -117,7 +118,7 @@ namespace MobileScanApp
                         csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
                         lbl.Text = csvdata;
-
+                        ConfirmOrderButton.IsVisible = true; //shows our confirm button after we choose a file
                     }
                 }
             }
