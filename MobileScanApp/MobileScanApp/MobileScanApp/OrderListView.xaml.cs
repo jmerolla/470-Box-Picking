@@ -54,9 +54,8 @@ namespace MobileScanApp
                 QtyOrdered = 432,
                 QtyOpen = 432
             });
-
-            
             MyListView.ItemsSource = OrderItems;
+            this.Content = Content;
             //BindingContext = this;
         }
 
