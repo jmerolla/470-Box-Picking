@@ -35,6 +35,7 @@ namespace MobileScanApp
             //REMOVE THESE WHEN TESTING IS DONE!!!
             OrderItems.Add(new OrderItem
             {
+                isPacked= new CheckBox { IsChecked = false, IsEnabled = false},
                 Name = "1134HP Acrylic 0.5 mil foil",
                 Location = "r5",
                 BarcodeID = "012044038918",
@@ -46,6 +47,7 @@ namespace MobileScanApp
             //This is an actual example from the box from AD
             OrderItems.Add(new OrderItem
             {
+                isPacked = new CheckBox { IsChecked = false, IsEnabled = false },
                 Name = "0808HP Acrylic 2.0 mil foil",
                 Location = "s16",
                 BarcodeID = "655616007419",
@@ -81,6 +83,9 @@ namespace MobileScanApp
                 await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
             }
         ((ListView)sender).SelectedItem = null; //Deselect Item
+        }
+        async void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
+		{
         }
     }
 }
