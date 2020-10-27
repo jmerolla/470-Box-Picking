@@ -92,7 +92,7 @@ namespace MobileScanApp
                 if (Device.RuntimePlatform == Device.UWP)
                 {
                   
-                    fileType = ".csv";
+                    fileType = ".txt";
                 }
 
                 //Opens file picker
@@ -143,7 +143,7 @@ namespace MobileScanApp
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
 
-           orderText =  orderItemParser.getOrderItemInfo(orderText);
+            orderText =  orderItemParser.getOrderItemInfo(orderText);
 
             ItemsList = orderText.Split(',').ToList();
             int ORDER_COLUMNS = 12;
