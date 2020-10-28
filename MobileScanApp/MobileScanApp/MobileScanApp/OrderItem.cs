@@ -8,7 +8,7 @@ namespace MobileScanApp
     public class OrderItem
     {
         
-        public CheckBox isPacked { get; set; }
+        public Boolean IsPacked { get; set; }
         public String Name { get; set; }
         public String Location { get; set; }
         public String BarcodeID { get; set; }

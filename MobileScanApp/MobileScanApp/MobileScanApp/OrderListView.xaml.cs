@@ -29,25 +29,24 @@ namespace MobileScanApp
         public OrderListView(List<OrderItem> OrderItems)
         {
             InitializeComponent();
-
             this.OrderItems = OrderItems;
             //This is a fake example using my deoderant barcode
             //REMOVE THESE WHEN TESTING IS DONE!!!
             OrderItems.Add(new OrderItem
             {
-                isPacked= new CheckBox { IsChecked = false, IsEnabled = false},
+                IsPacked= false,
                 Name = "1134HP Acrylic 0.5 mil foil",
                 Location = "r5",
                 BarcodeID = "012044038918",
                 PalletQty = 1,
                 CartonQty = 5,
-                QtyOrdered = 2,
+                QtyOrdered = 1,
                 QtyOpen = 2
             });
             //This is an actual example from the box from AD
             OrderItems.Add(new OrderItem
             {
-                isPacked = new CheckBox { IsChecked = false, IsEnabled = false },
+                IsPacked = false,
                 Name = "0808HP Acrylic 2.0 mil foil",
                 Location = "s16",
                 BarcodeID = "655616007419",
@@ -56,9 +55,24 @@ namespace MobileScanApp
                 QtyOrdered = 432,
                 QtyOpen = 432
             });
-            MyListView.ItemsSource = OrderItems;
+            //Graham's package of nails
+            OrderItems.Add(new OrderItem
+            {
+                IsPacked = false,
+                Name = "nail example",
+                Location = "s16",
+                BarcodeID = "191518759372",
+                PalletQty = 2,
+                CartonQty = 10,
+                QtyOrdered = 1,
+                QtyOpen = 2
+            });
+            ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
+            MyListView.ItemsSource = myCollection;
             this.Content = Content;
             //BindingContext = this;
+            NavigationPage.SetHasNavigationBar(this, false); //gets rid of random gray NavBar.
+            NavigationPage.SetHasBackButton(this, false); //gets rid of back button while scanning.
         }
 
         /// <summary>
@@ -73,7 +87,7 @@ namespace MobileScanApp
         /// <param name="e">Event handler for item tapping</param>
         async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            if (e.Item == null)
+            if (((OrderItem)e.Item).IsPacked == true)
             {
                 await DisplayAlert("Item already completed", "Enough of this item has already been scanned in for this order.", "OK");
                 return;
@@ -84,8 +98,9 @@ namespace MobileScanApp
             }
         ((ListView)sender).SelectedItem = null; //Deselect Item
         }
-        async void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
+        void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
 		{
+            ((CheckBox)sender).IsChecked = true;
         }
     }
 }

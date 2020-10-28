@@ -105,7 +105,7 @@ namespace MobileScanApp
                                     await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
                                     await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed.", "OK"); //Alert to know we are done scanning an item.                                
                                     await Navigation.PopAsync(); //Takes us back to the page where we choose which item we are about to scan.
-                                    OIList[OIList.IndexOf(scannableItem)]=null;
+                                    OIList[OIList.IndexOf(scannableItem)].IsPacked=true;
                                 }
                             }
                             else

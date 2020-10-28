@@ -92,7 +92,7 @@ namespace MobileScanApp
                         {
                             OrderItems.Add(new OrderItem
                             {
-                                isPacked = new CheckBox { IsChecked = false, IsEnabled= false },
+                                IsPacked = false,
                                 Name = orderArray[i + 1, 1],
                                 Location = orderArray[i, 11],
                                 BarcodeID = orderArray[i, 1],
