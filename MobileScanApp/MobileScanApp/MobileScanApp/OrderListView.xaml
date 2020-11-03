@@ -30,7 +30,7 @@
                         <ColumnDefinition Width="0.1*" />
                         <ColumnDefinition Width="0.1*" />
                     </Grid.ColumnDefinitions>
-                <Label Grid.Column="0" Text="Packed" />
+                <Label Grid.Column="0" Text="Packed" HorizontalOptions="Center" />
                 <Label Grid.Column="1" Text="Product Name" />
                 <Label Grid.Column="2" Text="Location" />
                 <Label Grid.Column="3" Text="BarCode ID" />
@@ -56,7 +56,7 @@
                                 <ColumnDefinition Width="0.1*" />
                                 <ColumnDefinition Width="0.1*" />
                             </Grid.ColumnDefinitions>
-                            <CheckBox Grid.Column="0" IsEnabled="True" IsChecked="{Binding IsPacked}" Color="Black" CheckedChanged="OnCheckBoxCheckedChanged"/>
+                            <CheckBox Grid.Column="0" IsEnabled="False" IsChecked="{Binding IsPacked}" Color="Gray" HorizontalOptions="Center"  CheckedChanged="OnCheckBoxCheckedChanged"/>
                             <Label Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" />
                             <Label Grid.Column="2" Text="{Binding Location}" />
                         <Label Grid.Column="3" Text="{Binding BarcodeID}" />

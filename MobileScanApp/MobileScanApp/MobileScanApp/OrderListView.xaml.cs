@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
@@ -40,7 +39,7 @@ namespace MobileScanApp
                 BarcodeID = "012044038918",
                 PalletQty = 1,
                 CartonQty = 5,
-                QtyOrdered = 1,
+                QtyOrdered = 2,
                 QtyOpen = 2
             });
             //This is an actual example from the box from AD
@@ -90,6 +89,7 @@ namespace MobileScanApp
             if (((OrderItem)e.Item).IsPacked == true)
             {
                 await DisplayAlert("Item already completed", "Enough of this item has already been scanned in for this order.", "OK");
+                ((ListView)sender).SelectedItem = null; //Deselect Item
                 return;
             }
             else
@@ -98,8 +98,9 @@ namespace MobileScanApp
             }
         ((ListView)sender).SelectedItem = null; //Deselect Item
         }
+
         void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
-		{
+        {
             ((CheckBox)sender).IsChecked = true;
         }
     }

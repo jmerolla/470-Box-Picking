@@ -19,7 +19,7 @@ namespace MobileScanApp
      *
      *  @source: https://www.c-sharpcorner.com/blogs/using-zxing-code-128-scanner-in-xamarin-forms2
      *
-     *  Last edited: Spencer Dusi 10/15/20
+     *  Last edited: Spencer Dusi 11/3/20
      * 
      */
     public partial class ScanPage : ContentPage
@@ -31,31 +31,17 @@ namespace MobileScanApp
         bool _isScanning = true; //true before every scan, helps stop multiple scans
         public StackLayout stkMainlayout; //Our ScanPage's layout format
         public OrderItem scannableItem; //holds OrderItem currently being picked
-        ZXingScannerPage scanPage;
-        public IList<OrderItem> OIList;
+        ZXingScannerPage scanPage; //creating our ZXing scan page
+        public IList<OrderItem> OIList; //Creating OrderItemList to change our components of the list
 
         public ScanPage(OrderItem scannableItem, IList<OrderItem> list)
         {
+            InitializeComponent(); //calling content formed in ScanPage.xaml
             OIList = list;
             this.scannableItem = scannableItem; //Taking the OrderItem from OrderListView.
-            /**
-             * Creates a new layout for our ScanPage screen. Things added to this layout
-             * will be added to the center of the screen (Horizontally and vertically centered).
-             * Each item added (butttons, textboxes, switches, etc..) will be added below the previous
-             * item added. 
-             */
-            stkMainlayout = new StackLayout
-            {
-                HorizontalOptions = LayoutOptions.CenterAndExpand,
-                VerticalOptions = LayoutOptions.CenterAndExpand,
-                Orientation = StackOrientation.Vertical
-            };
-            Button btnScan = new Button
-            {
-                Text = "Scan",
-                HorizontalOptions = LayoutOptions.Center,
-                VerticalOptions = LayoutOptions.Center
-            };
+
+            itemLabel.Text = "Item ready to be Scanned" + scannableItem.Name; //sets our label with the name of the item in case of mis tap.
+
             /**
              *  var "options" allows you to choose what options you want your scanner to
              * allow. Currently using it to AutoRotate and to "TryHarder" which 
@@ -70,24 +56,28 @@ namespace MobileScanApp
                 TryHarder = false
             };
 
-            NavigationPage.SetHasNavigationBar(this, false); //gets rid of random gray NavBar.
-            NavigationPage.SetHasBackButton(this, false); //gets rid of back button while scanning.
-
-            var overlay = new ZXingDefaultOverlay();
-            overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString();
-            overlay.BottomText = "Located in Section: " + scannableItem.Location;
-            overlay.ShowFlashButton = true;
-            overlay.FlashButtonClicked += (t, ed) =>
+            /*
+             * Overlay sets our top and bottom texts, these texts will change once we scan items.
+             * The default overlay also provides us with the two shaded areas of the screen as
+             * well as the red line drawn across the screen to show where to scan the barcode.
+             */
+            var overlay = new ZXingDefaultOverlay
             {
-                scanPage.ToggleTorch();
+                TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString(),
+                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.Location,
+                ShowFlashButton = true
             };
-            overlay.BindingContext = overlay; //sets my overlay with intended objects
-            //Once button is clicked, create a new scanpage with the options and overlay set above
+
+            //Once button is clicked, create a new scanPage with the options and overlay set above
             btnScan.Clicked += async (a, s) =>
             {
                 scanPage = new ZXingScannerPage(options, overlay);
-        //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
-        scanPage.OnScanResult += (result) =>
+                overlay.FlashButtonClicked += (t, ed) =>
+                {
+                    scanPage.ToggleTorch();
+                };
+                //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
+                scanPage.OnScanResult += (result) =>
                 {
                     Device.BeginInvokeOnMainThread(async () =>
                     {
@@ -105,7 +95,7 @@ namespace MobileScanApp
                                     await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
                                     await DisplayAlert("Finished Scanning: ", scannableItem.Name + " is completed.", "OK"); //Alert to know we are done scanning an item.                                
                                     await Navigation.PopAsync(); //Takes us back to the page where we choose which item we are about to scan.
-                                    OIList[OIList.IndexOf(scannableItem)].IsPacked=true;
+                                    OIList[OIList.IndexOf(scannableItem)].IsPacked = true;
                                 }
                             }
                             else
@@ -114,13 +104,17 @@ namespace MobileScanApp
                             }
                                 scanPage.IsAnalyzing = true; //Allows us to scan again once we "ok" the popup.
                                 _isScanning = true; //Allows us to be able to reenter our if() statement.
-                            }
+                        }
                     });
                 };
                 await Navigation.PushModalAsync(scanPage); //Takes us to the page where we see what the camera is picking up
             };
-            stkMainlayout.Children.Add(btnScan); //adds button to our screen
-            this.Content = stkMainlayout; //sets our content in the .cs instead of .xaml
+            //If the wrong item is clicked hit the back button to get back to the list of items to be scanned.
+            btnBack.Clicked += async (a, s) =>
+            {
+                await Navigation.PopAsync(); //Takes us back to the page where we choose which item we are about to scan.
+            };
+            this.Content = Content; //sets our content from the .xaml
         }
 
         /**
@@ -131,7 +125,7 @@ namespace MobileScanApp
          * @Return - true if the barcode scanned matches the BarcodeID from OrderItem. false otherwise.
          */
         public Boolean barCodeMatcher()
-        {
+        { 
             if (scannableItem.BarcodeID == barCodeRead)
             {
                 return true;
@@ -152,7 +146,7 @@ namespace MobileScanApp
             if (doneScanning != true)
             {
                 qtyScanned++;
-            }   
+            }
             if (qtyOrdered >= qtyScanned)
             {
                 if (qtyOrdered == qtyScanned)
