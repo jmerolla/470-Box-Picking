@@ -23,38 +23,60 @@ namespace MobileScanApp
         /// <returns>The trimmed string of CSV data</returns>
         public String getOrderItemInfo(String orderText)
         {
-
-            string pattern = @"Ln,";
+      
+            //REMOVED AS THE ORDER HEADER WILL LIKELY NEED TO BE EXTRACTED AS WELL
+           // string pattern = @"Ln";
             //string pattern = @"Ln\s"; For use with csvs made with current method (broken)
             int matchInt = 1;
 
+           // foreach (Match match in Regex.Matches(orderText, pattern))
+            //    matchInt = match.Index;
+
+
+           // orderText = orderText.Substring(matchInt);
+
+            //pattern = @"--";
+            string pattern = @"Base\sOrder";
             foreach (Match match in Regex.Matches(orderText, pattern))
+            {
                 matchInt = match.Index;
-
-
-            orderText = orderText.Substring(matchInt);
-
-            pattern = @"Base\sOrder";
-            foreach (Match match in Regex.Matches(orderText, pattern))
-                matchInt = match.Index;
-
+               
+            }
             orderText = orderText.Remove(matchInt);
-            orderText = orderText.Trim(',', ' ');
+            orderText = orderText.Trim(' ');
 
             return orderText;
 
         }
 
-        /// <summary>
-        /// Takes a list of Strings to fill and return a 2d array with columns of length ORDER_COLUMNS. 
-        /// *NOTE: This preserves the format of the original csv order  sheet the list comes from.*
-        /// 
-        /// </summary>
-        /// <param name="ItemsList">the list of substrings taken from the parsed csv file</param>
-        /// <param name="ORDER_COLUMNS">the amount of columns in the original csv file, used to determine
-        /// the row and column count of the array</param>
-        /// <returns>a 2D array of strings from ItemsList</returns>
-        public String[,] parseOrderItemsIntoArray(List<String> ItemsList, int ORDER_COLUMNS)
+        public String extractHeaderInfo(String orderText)
+        {
+            //TODO take whats needed from the header
+
+            //Remove all unnecessary header data
+            string pattern = @"Location\r\n";
+            Match m = Regex.Match(orderText, pattern);
+            orderText = orderText.Substring(m.Index);
+
+            //get start of specific order information
+            pattern = @"\s1\s";
+            m = Regex.Match(orderText, pattern);
+            orderText = orderText.Substring(m.Index);
+
+            return orderText;
+        }
+
+
+            /// <summary>
+            /// Takes a list of Strings to fill and return a 2d array with columns of length ORDER_COLUMNS. 
+            /// *NOTE: This preserves the format of the original csv order  sheet the list comes from.*
+            /// 
+            /// </summary>
+            /// <param name="ItemsList">the list of substrings taken from the parsed csv file</param>
+            /// <param name="ORDER_COLUMNS">the amount of columns in the original csv file, used to determine
+            /// the row and column count of the array</param>
+            /// <returns>a 2D array of strings from ItemsList</returns>
+            public String[,] parseOrderItemsIntoArray(List<String> ItemsList, int ORDER_COLUMNS)
         {
             int k = 0; //itemsList iterator
             string[,] orderArray = new string[ItemsList.Count / ORDER_COLUMNS, ORDER_COLUMNS];

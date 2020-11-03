@@ -88,7 +88,7 @@ namespace MobileScanApp
                 string fileType = null;
                 if (Device.RuntimePlatform == Device.Android)
                 {
-                    fileType = "csv";
+                    fileType = "txt";
                 }
                 if (Device.RuntimePlatform == Device.UWP)
                 {
@@ -102,7 +102,8 @@ namespace MobileScanApp
                 //Loop file picker until a .csv is selected
                 //skips if picking operation is cancelled
                 while (filedata!= null && filedata.FileName.Contains(fileType)!= true){
-                    lbl.Text = "File Type must be .csv";
+                      lbl.Text = "File Type must be .txt";
+                    //  lbl.Text = "File Type must be .csv";
                     filedata = await CrossFilePicker.Current.PickFile();
                 }
 
@@ -117,7 +118,7 @@ namespace MobileScanApp
                         lbl.Text = filedata.FileName;
                         csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
-                        lbl.Text = csvdata;
+                        //lbl.Text = csvdata;
                         ConfirmOrderButton.IsVisible = true; //shows our confirm button after we choose a file
                     }
                 }
@@ -146,9 +147,10 @@ namespace MobileScanApp
 
             orderText =  orderItemParser.getOrderItemInfo(orderText);
 
-            ItemsList = orderText.Split(',').ToList();
-            int ORDER_COLUMNS = 12;
+            orderText = orderItemParser.extractHeaderInfo(orderText);
 
+            ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            int ORDER_COLUMNS = 12;
             orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
 
             OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
