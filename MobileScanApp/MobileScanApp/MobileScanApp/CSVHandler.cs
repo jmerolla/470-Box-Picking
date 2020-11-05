@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -16,6 +17,8 @@ namespace MobileScanApp
    class CSVHandler
     {
         /// <summary>
+        /// @author Jess Merolla
+        /// @date 10/15/2020
         /// Takes a string holding csv data and returns a string
         /// with the information unrelated to the items ordered removed
         /// </summary>
@@ -49,6 +52,16 @@ namespace MobileScanApp
 
         }
 
+        /// <summary>
+        /// @author Jess Merolla
+        /// @date 11/4/2020
+        /// 
+        /// Extracts the header information and then removes it from the string of order text
+        /// 
+        /// TODO Needs to extract the header and do something with it - waiting on Bill
+        /// </summary>
+        /// <param name="orderText"></param>
+        /// <returns></returns>
         public String extractHeaderInfo(String orderText)
         {
             //TODO take whats needed from the header
@@ -66,8 +79,9 @@ namespace MobileScanApp
             return orderText;
         }
 
-
+        /*
             /// <summary>
+            /// 
             /// Takes a list of Strings to fill and return a 2d array with columns of length ORDER_COLUMNS. 
             /// *NOTE: This preserves the format of the original csv order  sheet the list comes from.*
             /// 
@@ -100,6 +114,7 @@ namespace MobileScanApp
             return orderArray;
         }
 
+        
         public List<OrderItem> arrayToOrderItemList(string[,] orderArray)
         {
             List<OrderItem> OrderItems = new List<OrderItem>();
@@ -118,10 +133,10 @@ namespace MobileScanApp
                                 Name = orderArray[i + 1, 1],
                                 Location = orderArray[i, 11],
                                 BarcodeID = orderArray[i, 1],
-
-                                PalletQty = Int32.Parse(orderArray[i, 8]),
-                                CartonQty = Int32.Parse(orderArray[i, 9]),
-                                QtyOrdered = Int32.Parse(orderArray[i, 3]),
+                                //first three were originally decimal
+                                PalletQty = decimal.Parse(orderArray[i, 8]),
+                                CartonQty = decimal.Parse(orderArray[i, 9]),
+                                QtyOrdered = decimal.Parse(orderArray[i, 3]),
                                 QtyOpen = decimal.Parse(orderArray[i, 4])
                             });
                         }
@@ -134,6 +149,77 @@ namespace MobileScanApp
                 }
             }
 
+            return OrderItems;
+        }
+        */
+
+
+        /// <summary>
+        /// @Author Jess Merolla
+        /// @date 11/5/2020
+        /// 
+        /// Take the String list of parsed order sheet info and convert that into a list of OrderItems
+        /// </summary>
+        /// <param name="ItemsList"></param>
+        /// <returns></returns>
+        public List<OrderItem> parseOrderItemsFromList(List<string> ItemsList)
+        {
+            List<OrderItem> OrderItems = new List<OrderItem>();
+
+            //Regex used to identify order item data
+            Regex ln = new Regex(@"[0-9]{1,2}", RegexOptions.Compiled | RegexOptions.Singleline);
+            Regex ItemNumber = new Regex(@"[0-9]{14}", RegexOptions.Compiled | RegexOptions.Singleline);
+            Regex ItemName = new Regex(@"[a-zA-Z]{2,}", RegexOptions.Compiled | RegexOptions.Singleline);
+            Regex Location = new Regex(@"[a-zA-Z]{1}[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
+
+            //Used to hold location
+            ArrayList locationList; 
+
+            for (int i=0; i< ItemsList.Count; i++)
+            {
+                if (i + 1 < ItemsList.Count)    //prevent null error
+                {
+                    if (ln.IsMatch(ItemsList[i]) && ItemNumber.IsMatch(ItemsList[i+1]))
+                    {
+                        locationList = new ArrayList();
+                        //get array list of locations
+                        int j = i+10;   //start at first location value
+
+                        //loop through and find all possible locations,
+                        //stopping at the next ItemName field
+                        while (ItemName.IsMatch(ItemsList[j])!= true)
+                        {
+                            if (Location.IsMatch(ItemsList[j]))
+                            {
+                                //add item to arrayList
+                                locationList.Add(ItemsList[j]);
+                            }
+
+                            j++;
+                        }
+                         try
+                         {
+                             OrderItems.Add(new OrderItem
+                             {
+                                 IsPacked = false,
+                                 Name = ItemsList[i],    //still need to find
+                                 Location = locationList.ToArray(typeof(String)) as String[], //needs to be an arrayList + grab QOH in CTs
+                                 BarcodeID = ItemsList[i+1],
+
+                                 PalletQty = decimal.Parse(ItemsList[i+7]),
+                                 CartonQty = decimal.Parse(ItemsList[i+8]),
+                                 QtyOrdered = decimal.Parse(ItemsList[i+3]),   
+                                 QtyOpen = decimal.Parse(ItemsList[i+4])
+                             });
+                         }
+                         catch (FormatException e)
+                         {
+                             Console.WriteLine(e.Message);
+                         }
+                        
+                    }
+                }
+            }
             return OrderItems;
         }
     }
