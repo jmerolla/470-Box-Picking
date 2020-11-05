@@ -40,7 +40,7 @@ namespace MobileScanApp
             OIList = list;
             this.scannableItem = scannableItem; //Taking the OrderItem from OrderListView.
 
-            itemLabel.Text = "Item ready to be Scanned" + scannableItem.Name; //sets our label with the name of the item in case of mis tap.
+            itemLabel.Text = "Item to be scanned: " + scannableItem.Name; //sets our label with the name of the item in case of mis tap.
 
             /**
              *  var "options" allows you to choose what options you want your scanner to
