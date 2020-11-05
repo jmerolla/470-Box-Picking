@@ -173,16 +173,15 @@ namespace MobileScanApp
             Regex Location = new Regex(@"[a-zA-Z]{1}[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
 
             //Used to hold location
-            ArrayList locationList; 
-
+            String locationString;
             for (int i=0; i< ItemsList.Count; i++)
             {
                 if (i + 1 < ItemsList.Count)    //prevent null error
                 {
                     if (ln.IsMatch(ItemsList[i]) && ItemNumber.IsMatch(ItemsList[i+1]))
                     {
-                        locationList = new ArrayList();
-                        //get array list of locations
+                      
+                        locationString = "";
                         int j = i+10;   //start at first location value
 
                         //loop through and find all possible locations,
@@ -191,8 +190,8 @@ namespace MobileScanApp
                         {
                             if (Location.IsMatch(ItemsList[j]))
                             {
-                                //add item to arrayList
-                                locationList.Add(ItemsList[j]);
+                                ItemsList[j] = ItemsList[j].Remove(3);
+                                locationString+=(ItemsList[j] + " (" + ItemsList[j-1] + ") \r\n");
                             }
 
                             j++;
@@ -203,8 +202,8 @@ namespace MobileScanApp
                              OrderItems.Add(new OrderItem
                              {
                                  IsPacked = false,
-                                 Name = ItemsList[j] + " " + ItemsList[j+1],    
-                                 Location = locationList.ToArray(typeof(String)) as String[], //TODO might also need to grab QOH in CTs
+                                 Name = ItemsList[j] + " " + ItemsList[j+1],
+                                 LocationQOH = locationString, 
                                  BarcodeID = ItemsList[i+1],
 
                                  PalletQty = decimal.Parse(ItemsList[i+7]),

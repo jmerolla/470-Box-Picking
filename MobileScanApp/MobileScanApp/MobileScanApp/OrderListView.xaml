@@ -34,7 +34,7 @@
                     </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Text="Packed" HorizontalOptions="Center" />
                 <Label Grid.Column="1" Text="Product Name" />
-                <Label Grid.Column="2" Text="Location" />
+                <Label Grid.Column="2" Text="Location (QOH in CTs)" />
                 <Label Grid.Column="3" Text="BarCode ID" />
                 <Label Grid.Column="4" Text="Pallet Qty" />
                 <Label Grid.Column="5" Text="Carton Qty" />
@@ -60,7 +60,7 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" x:Name="checkMark" HeightRequest="20" IsVisible="{Binding IsPacked}" Source="Assets/Images/CheckMark.png" Scale="1"/>
                             <Label Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" />
-                            <Label Grid.Column="2" Text="{Binding Location}" />
+                            <Label Grid.Column="2" Text="{Binding LocationQOH}" />
                         <Label Grid.Column="3" Text="{Binding BarcodeID}" />
                         <Label Grid.Column="4" Text="{Binding PalletQty}" />
                         <Label Grid.Column="5" Text="{Binding CartonQty}"/>

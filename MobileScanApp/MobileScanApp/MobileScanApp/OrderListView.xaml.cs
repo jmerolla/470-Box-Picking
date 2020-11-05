@@ -39,7 +39,7 @@ namespace MobileScanApp
             {
                 IsPacked= false,
                 Name = "1134HP Acrylic 0.5 mil foil",
-                Location = new String[] { "r5" },
+                LocationQOH = "r5",
                 BarcodeID = "012044038918",
                 PalletQty = 1,
                 CartonQty = 5,
@@ -51,7 +51,7 @@ namespace MobileScanApp
             {
                 IsPacked = false,
                 Name = "0808HP Acrylic 2.0 mil foil",
-                Location = new String[] { "s16" },
+                LocationQOH = "s16",
                 BarcodeID = "655616007419",
                 PalletQty = 2,
                 CartonQty = 10,
@@ -63,7 +63,7 @@ namespace MobileScanApp
             {
                 IsPacked = false,
                 Name = "nail example",
-                Location = new String[]{ "s16", "s12" },
+                LocationQOH = "s16 s12",
                 BarcodeID = "191518759372",
                 PalletQty = 2,
                 CartonQty = 10,
