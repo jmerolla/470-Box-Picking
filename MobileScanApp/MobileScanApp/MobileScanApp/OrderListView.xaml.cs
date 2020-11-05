@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Timers;
+using System.Windows.Input;
 using Xamarin.Forms;
 using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
@@ -18,6 +21,7 @@ namespace MobileScanApp
     public partial class OrderListView : ContentPage
     {
         public IList<OrderItem> OrderItems { get;  set; }
+        IEnumerable myCol;
 
         /// @author Jess Merolla
         /// @date   9/30/2020
@@ -67,24 +71,37 @@ namespace MobileScanApp
                 QtyOpen = 2
             });
             ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
-            MyListView.ItemsSource = myCollection;
             this.Content = Content;
-            //BindingContext = this;
-            NavigationPage.SetHasNavigationBar(this, false); //gets rid of random gray NavBar.
-            NavigationPage.SetHasBackButton(this, false); //gets rid of back button while scanning.
+            MyListView.IsRefreshing = true;
+            MyListView.ItemsSource = null;
+            MyListView.ItemsSource = myCollection;
+            myCol = myCollection;
+            var timer = new Timer(5000);
+            timer.Elapsed += OnTimerElapsed;
+            timer.Start();
+            //timer.AutoReset = false;
         }
 
-        /// <summary>
-        /// 
-        /// @author Jess Merolla, Graham Hallman-Taylor
-        /// @date 9/30/2020
-        /// 
-        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
-        /// 
-        /// </summary>
-        /// <param name="sender">Used to access the currently selected OrderItem</param>
-        /// <param name="e">Event handler for item tapping</param>
-        async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
+
+        public void OnTimerElapsed(object o, ElapsedEventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                MyListView.ItemsSource = null;
+                MyListView.ItemsSource = myCol;
+            });
+        }
+            /// <summary>
+            /// 
+            /// @author Jess Merolla, Graham Hallman-Taylor
+            /// @date 9/30/2020
+            /// 
+            /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
+            /// 
+            /// </summary>
+            /// <param name="sender">Used to access the currently selected OrderItem</param>
+            /// <param name="e">Event handler for item tapping</param>
+            async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             if (((OrderItem)e.Item).IsPacked == true)
             {
@@ -97,11 +114,6 @@ namespace MobileScanApp
                 await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
             }
         ((ListView)sender).SelectedItem = null; //Deselect Item
-        }
-
-        void OnCheckBoxCheckedChanged(object sender, CheckedChangedEventArgs e)
-        {
-            ((CheckBox)sender).IsChecked = true;
         }
     }
 }
