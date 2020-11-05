@@ -75,13 +75,12 @@ namespace MobileScanApp
             MyListView.IsRefreshing = true;
             MyListView.ItemsSource = myCollection;
             myCol = myCollection;
-            timer = new Timer(5000);
+            timer = new Timer(1000);
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
-            timer.AutoReset = false;
         }
 
-        protected virtual void OnResume()
+        protected override void OnAppearing()
         {
             timer.AutoReset = true;
         }
@@ -92,6 +91,7 @@ namespace MobileScanApp
             {
                 MyListView.ItemsSource = null;
                 MyListView.ItemsSource = myCol;
+                timer.AutoReset = false;
             });
         }
             /// <summary>
