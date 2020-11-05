@@ -10,7 +10,7 @@ namespace MobileScanApp
         
         public Boolean IsPacked { get; set; }
         public String Name { get; set; }
-        public String[] Location { get; set; }
+        public String LocationQOH { get; set; }
         public String BarcodeID { get; set; }
         public decimal PalletQty { get; set; }
         public decimal CartonQty { get; set; }

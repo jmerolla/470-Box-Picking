@@ -64,7 +64,7 @@ namespace MobileScanApp
             var overlay = new ZXingDefaultOverlay
             {
                 TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString(),
-                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.Location,
+                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.LocationQOH,
                 ShowFlashButton = true
             };
 
