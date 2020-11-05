@@ -197,13 +197,14 @@ namespace MobileScanApp
 
                             j++;
                         }
+                
                          try
                          {
                              OrderItems.Add(new OrderItem
                              {
                                  IsPacked = false,
-                                 Name = ItemsList[i],    //still need to find
-                                 Location = locationList.ToArray(typeof(String)) as String[], //needs to be an arrayList + grab QOH in CTs
+                                 Name = ItemsList[j] + " " + ItemsList[j+1],    
+                                 Location = locationList.ToArray(typeof(String)) as String[], //TODO might also need to grab QOH in CTs
                                  BarcodeID = ItemsList[i+1],
 
                                  PalletQty = decimal.Parse(ItemsList[i+7]),
