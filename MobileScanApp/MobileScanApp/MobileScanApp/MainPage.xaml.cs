@@ -150,10 +150,15 @@ namespace MobileScanApp
             orderText = orderItemParser.extractHeaderInfo(orderText);
 
             ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            int ORDER_COLUMNS = 12;
-            orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
 
-            OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
+
+            //OLD CODE FOR CSV
+            // int ORDER_COLUMNS = 12;
+            // orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
+           // OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
+
+            //Parse OrderItems from List (txt version)
+            OrderItems = orderItemParser.parseOrderItemsFromList(ItemsList);
             
             return orderText;
         }

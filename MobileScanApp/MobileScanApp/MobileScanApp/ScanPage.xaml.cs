@@ -134,6 +134,7 @@ namespace MobileScanApp
         }
 
         /**
+         * !!!!!!!!!!!!Edited by Jess Merolla 11/4/2020
          * Edited by Spencer Dusi 10-12-20.
          * This method takes the quantity ordered for the specific item
          * and each time the item is scanned it adds to the counter until
@@ -142,7 +143,8 @@ namespace MobileScanApp
          */
         public int RemainingScans()
         {
-            int qtyOrdered = scannableItem.QtyOrdered;
+            //changed from int to decimal
+            decimal qtyOrdered = scannableItem.QtyOrdered;
             if (doneScanning != true)
             {
                 qtyScanned++;
@@ -157,8 +159,9 @@ namespace MobileScanApp
                 {
                     doneScanning = false;
                 }
-            }
-            remainingScans = qtyOrdered - qtyScanned;
+            }    
+            //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            remainingScans = (int)qtyOrdered - qtyScanned; //TEMP FIX ---NEED TO DISCUSS HOW A DECIMAL MIGHT AFFECT THIS
             return remainingScans;
         }
     }
