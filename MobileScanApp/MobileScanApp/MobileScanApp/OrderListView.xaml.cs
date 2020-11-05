@@ -22,7 +22,7 @@ namespace MobileScanApp
     {
         public IList<OrderItem> OrderItems { get;  set; }
         IEnumerable myCol;
-
+        Timer timer;
         /// @author Jess Merolla
         /// @date   9/30/2020
         /// <summary>
@@ -73,15 +73,18 @@ namespace MobileScanApp
             ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
             this.Content = Content;
             MyListView.IsRefreshing = true;
-            MyListView.ItemsSource = null;
             MyListView.ItemsSource = myCollection;
             myCol = myCollection;
-            var timer = new Timer(5000);
+            timer = new Timer(5000);
             timer.Elapsed += OnTimerElapsed;
             timer.Start();
-            //timer.AutoReset = false;
+            timer.AutoReset = false;
         }
 
+        protected virtual void OnResume()
+        {
+            timer.AutoReset = true;
+        }
 
         public void OnTimerElapsed(object o, ElapsedEventArgs e)
         {
