@@ -44,7 +44,10 @@ namespace MobileScanApp
                 PalletQty = 1,
                 CartonQty = 5,
                 QtyOrdered = 2,
-                QtyOpen = 2
+                QtyOpen = 2,
+                UM = "RL",
+                ExtPrice = "20.00",
+                DueDate = "test"
             });
             //This is an actual example from the box from AD
             OrderItems.Add(new OrderItem
@@ -56,7 +59,10 @@ namespace MobileScanApp
                 PalletQty = 2,
                 CartonQty = 10,
                 QtyOrdered = 432,
-                QtyOpen = 432
+                QtyOpen = 432,
+                UM = "RL",
+                ExtPrice = "20.00",
+                DueDate = "test"
             });
             //Graham's package of nails
             OrderItems.Add(new OrderItem
@@ -68,7 +74,10 @@ namespace MobileScanApp
                 PalletQty = 2,
                 CartonQty = 10,
                 QtyOrdered = 1,
-                QtyOpen = 2
+                QtyOpen = 2,
+                UM = "RL",
+                ExtPrice = "20.00",
+                DueDate = "test"
             });
             ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
             this.Content = Content;
