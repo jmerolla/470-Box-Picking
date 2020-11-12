@@ -73,18 +73,22 @@ namespace MobileScanApp
             ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
             this.Content = Content;
             MyListView.IsRefreshing = true;
-            MyListView.ItemsSource = myCollection;
-            myCol = myCollection;
-            timer = new Timer(1000);
-            timer.Elapsed += OnTimerElapsed;
-            timer.Start();
+            MyListView.ItemsSource = myCollection; //sets all of our items in our listview
+            myCol = myCollection; //temp IEnumerable for timer.
+            timer = new Timer(1000); //creates a timer that refreshes in a second of loading
+            timer.Elapsed += OnTimerElapsed; //uses OnTimerElapsed method to update our listview
+            timer.Start(); //starts our timer
         }
 
         protected override void OnAppearing()
         {
-            timer.AutoReset = true;
+            timer.AutoReset = true; //on the page appearing timer should autoReset.
         }
 
+        /*
+         * Once our timer runs out call this method that refreshes our table to 
+         * myCollection and disable the timer from restarting.
+         */
         public void OnTimerElapsed(object o, ElapsedEventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
