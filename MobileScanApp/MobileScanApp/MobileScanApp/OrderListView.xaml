@@ -23,24 +23,28 @@
             <StackLayout>
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.1*" />
-                        <ColumnDefinition Width="0.3*" />
-                        <ColumnDefinition Width="0.2*" />
-                        <ColumnDefinition Width="0.2*" />
-                        <ColumnDefinition Width="0.1*" />
-                        <ColumnDefinition Width="0.1*" />
-                        <ColumnDefinition Width="0.1*" />
-                        <ColumnDefinition Width="0.1*" />
-                    </Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.2*" />
+                            <ColumnDefinition Width="0.05*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                            <ColumnDefinition Width="0.1*" />
+                        </Grid.ColumnDefinitions>
                 <Label Grid.Column="0" Text="Packed" HorizontalOptions="Center" />
                 <Label Grid.Column="1" Text="Product Name" />
-                <Label Grid.Column="2" Text="Location (QOH in CTs)" />
-                <Label Grid.Column="3" Text="BarCode ID" />
-                <Label Grid.Column="4" Text="Pallet Qty" />
-                <Label Grid.Column="5" Text="Carton Qty" />
-                <Label Grid.Column="6" Text="Qty Ordered" />
-                <Label Grid.Column="7" Text="Qty Open" />
-                </Grid>
+                <Label Grid.Column="2" Text="UM" />
+                <Label Grid.Column="3" Text="Qty Ordered" />
+                <Label Grid.Column="4" Text="Qty Open" />
+                <Label Grid.Column="5" Text="Ext Price" />
+                <Label Grid.Column="6" Text="Due Date" />
+                <Label Grid.Column="7" Text="Pallet Qty" />
+                <Label Grid.Column="8" Text="Carton Qty" />
+                <Label Grid.Column="9" Text="Location (QOH in CTs)" />
+                    </Grid>
             </StackLayout>
         </ListView.Header>
 
@@ -50,9 +54,11 @@
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="0.1*" />
-                                <ColumnDefinition Width="0.3*" />
                                 <ColumnDefinition Width="0.2*" />
-                                <ColumnDefinition Width="0.2*" />
+                                <ColumnDefinition Width="0.05*" />
+                                <ColumnDefinition Width="0.1*" />
+                                <ColumnDefinition Width="0.1*" />
+                                <ColumnDefinition Width="0.1*" />
                                 <ColumnDefinition Width="0.1*" />
                                 <ColumnDefinition Width="0.1*" />
                                 <ColumnDefinition Width="0.1*" />
@@ -60,13 +66,15 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" x:Name="checkMark" HeightRequest="20" IsVisible="{Binding IsPacked}" Source="Assets/Images/CheckMark.png" Scale="1"/>
                             <Label Grid.Column="1" Text="{Binding Name}" FontAttributes="Bold" />
-                            <Label Grid.Column="2" Text="{Binding LocationQOH}" />
-                        <Label Grid.Column="3" Text="{Binding BarcodeID}" />
-                        <Label Grid.Column="4" Text="{Binding PalletQty}" />
-                        <Label Grid.Column="5" Text="{Binding CartonQty}"/>
-                        <Label Grid.Column="6" Text="{Binding QtyOrdered}" />
-                        <Label Grid.Column="7" Text="{Binding QtyOpen}"/>
-                    </Grid>
+                            <Label Grid.Column="2" Text="{Binding UM}" />
+                        <Label Grid.Column="3" Text="{Binding QtyOrdered}" />
+                        <Label Grid.Column="4" Text="{Binding QtyOpen}" />
+                        <Label Grid.Column="5" Text="{Binding ExtPrice}"/>
+                        <Label Grid.Column="6" Text="{Binding DueDate}" />
+                        <Label Grid.Column="7" Text="{Binding PalletQty}"/>
+                        <Label Grid.Column="8" Text="{Binding CartonQty}"/>
+                        <Label Grid.Column="9" Text="{Binding LocationQOH}"/>
+                        </Grid>
                 </ViewCell>
             </DataTemplate>
         </ListView.ItemTemplate>

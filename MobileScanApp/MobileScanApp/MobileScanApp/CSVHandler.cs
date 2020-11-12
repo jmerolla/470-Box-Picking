@@ -209,7 +209,11 @@ namespace MobileScanApp
                                  PalletQty = decimal.Parse(ItemsList[i+7]),
                                  CartonQty = decimal.Parse(ItemsList[i+8]),
                                  QtyOrdered = decimal.Parse(ItemsList[i+3]),   
-                                 QtyOpen = decimal.Parse(ItemsList[i+4])
+                                 QtyOpen = decimal.Parse(ItemsList[i+4]),
+
+                                 UM = ItemsList[i+2],
+                                 ExtPrice = ItemsList[i+5],
+                                 DueDate = ItemsList[i+6]
                              });
                          }
                          catch (FormatException e)

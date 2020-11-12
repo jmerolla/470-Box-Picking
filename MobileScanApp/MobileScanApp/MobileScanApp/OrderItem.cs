@@ -16,5 +16,8 @@ namespace MobileScanApp
         public decimal CartonQty { get; set; }
         public decimal QtyOrdered { get; set; }
         public decimal QtyOpen { get; set; }
+        public String UM { get; set; }
+        public String ExtPrice { get; set; }
+        public String DueDate { get; set; }
     }
 }
