@@ -4,39 +4,39 @@
              x:Class="MobileScanApp.ScanPage"
              NavigationPage.HasBackButton="False"
              NavigationPage.HasNavigationBar="False">
-  
+
     <ContentPage.Content>
-        <StackLayout 
+        <StackLayout
             HorizontalOptions="Center" 
             VerticalOptions="Center"
             Orientation="Vertical">
-                <Label
+            <Label
                     x:Name="itemLabel"
                     Text="{Binding itemLabels}"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
                     Padding="50">
-                </Label>
-                <Button 
+            </Label>
+            <Button 
                     x:Name = "btnScan"
                     Text = "Scan"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
                     BorderColor="DarkGray">
-                </Button>
-                <Label
+            </Button>
+            <Label
                     Text = "If this is not the item you intend on scanning:"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
                     Padding="50">
-                </Label>
-                <Button  
+            </Label>
+            <Button  
                     x:Name = "btnBack"
                     Text = "Back"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
                     BorderColor="DarkGray">
-                </Button>
+            </Button>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

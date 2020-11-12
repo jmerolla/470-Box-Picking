@@ -43,8 +43,8 @@ namespace MobileScanApp
                 BarcodeID = "012044038918",
                 PalletQty = 1,
                 CartonQty = 5,
-                QtyOrdered = 2,
-                QtyOpen = 2,
+                QtyOrdered = 6,
+                QtyOpen = 6,
                 UM = "RL",
                 ExtPrice = "20.00",
                 DueDate = "test"

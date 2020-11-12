@@ -5,6 +5,7 @@
              NavigationPage.HasBackButton="False"
              NavigationPage.HasNavigationBar="False">
 
+    
     <NavigationPage.TitleView>
         <Label Text="Click on an item to start scanning" 
                HorizontalOptions="Center"

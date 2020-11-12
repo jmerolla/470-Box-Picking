@@ -33,6 +33,8 @@ namespace MobileScanApp
         public OrderItem scannableItem; //holds OrderItem currently being picked
         ZXingScannerPage scanPage; //creating our ZXing scan page
         public IList<OrderItem> OIList; //Creating OrderItemList to change our components of the list
+        int tempEnteredAmount = -1;
+        bool EnteredQty = false;
 
         public ScanPage(OrderItem scannableItem, IList<OrderItem> list)
         {
@@ -56,6 +58,14 @@ namespace MobileScanApp
                 TryHarder = false
             };
 
+            Button EnterQtyToScan = new Button
+            {
+                IsVisible = true,
+                BorderColor = Color.DarkGray,
+                Text = "Enter Amount",
+            };
+
+
             /*
              * Overlay sets our top and bottom texts, these texts will change once we scan items.
              * The default overlay also provides us with the two shaded areas of the screen as
@@ -67,7 +77,11 @@ namespace MobileScanApp
                 BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.LocationQOH,
                 ShowFlashButton = true
             };
-
+            EnterQtyToScan.HeightRequest = .5;
+            EnterQtyToScan.Scale = 1;
+            EnterQtyToScan.HorizontalOptions = LayoutOptions.Center;
+            //EnterQtyToScan.VerticalOptions = LayoutOptions.Center;
+            overlay.Children.AddVertical(EnterQtyToScan);
             //Once button is clicked, create a new scanPage with the options and overlay set above
             btnScan.Clicked += async (a, s) =>
             {
@@ -75,6 +89,30 @@ namespace MobileScanApp
                 overlay.FlashButtonClicked += (t, ed) =>
                 {
                     scanPage.ToggleTorch();
+                };
+                EnterQtyToScan.Clicked += async (w, q) => {
+                    if (scannableItem.QtyOrdered > 5)
+                    {
+                        EnteredQty = true;
+                        while (tempEnteredAmount > scannableItem.QtyOrdered ||tempEnteredAmount == -1)
+                        {
+                            string EnteredAmountToScan = await DisplayPromptAsync(scannableItem.Name, "How many of this item do you intend to pack?", maxLength: 4, keyboard: Keyboard.Numeric);
+                            try
+                            {
+                                tempEnteredAmount = Int32.Parse(EnteredAmountToScan);
+                                if (tempEnteredAmount > scannableItem.QtyOrdered)
+                                {
+                                    await DisplayAlert("Error", "Amount entered exceeds quantity ordered.", "OK");
+                                }
+                            }
+                            catch
+                            {
+                                await DisplayAlert("Error", "Invalid entry, must enter a whole number.", "OK");
+                            }
+                        }
+                        RemainingScans();
+                        overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + remainingScans.ToString(); //overlay to represent how many scans remain.
+                    }
                 };
                 //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
                 scanPage.OnScanResult += (result) =>
@@ -147,7 +185,15 @@ namespace MobileScanApp
             decimal qtyOrdered = scannableItem.QtyOrdered;
             if (doneScanning != true)
             {
-                qtyScanned++;
+                if(EnteredQty)
+                {
+                    EnteredQty = false;
+                    qtyScanned += tempEnteredAmount;
+                }
+                else
+                {
+                    qtyScanned++;
+                }
             }
             if (qtyOrdered >= qtyScanned)
             {
