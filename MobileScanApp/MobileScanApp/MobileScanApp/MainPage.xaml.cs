@@ -37,9 +37,9 @@ namespace MobileScanApp
      */
     public partial class MainPage : ContentPage
     {
-        //uses PCLStorage to access cross platform filesystems
-        // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
-
+        //Used to refernece the log file
+        string fileName;
+        IFile file;
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
 
@@ -50,18 +50,58 @@ namespace MobileScanApp
         {
             InitializeComponent();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
-            // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
+            createLogFolder();
+
+           
 
         }
 
-        /* @author Jess Merolla
-         * 
-         * Navigates over to the ScanPage (for Scanning Barcodes)
-         * 
-         * !!!!!!!!!!!!TO-DO Remove this option from the main page on startup
-         * 
-         */
+        /// <summary>
+        /// Author: Jess Merolla
+        /// Date: 11/17/2020
+        /// NOTE: Pretty sure this is Windows specific atm
+        /// 
+        /// Checks for a log file for the current date, makes one
+        /// if it does not exist.
+        /// </summary>
+        private async void createLogFolder()
+        {
+            String dateName = DateTime.Now.ToString("dd-MM-yyyy");
+          //  String fileName = dateName;
+            IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
+
+           // Environment.StorageApplicationPermissions.FutureAccessList.Add(Environment
+           //  .GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+            //help
+            fileName = Path.Combine(Environment
+             .GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dateName);
+
+           
+            bool doesExist = File.Exists(fileName);
+            if (doesExist == true)
+            //    if (PCLHelper.IsFolderExistAsync(folderName).Result == true)
+            {
+                file = folder.GetFileAsync(dateName).Result;
+                lbl.Text = "Log file already exists";
+            }
+            else
+            {
+                try
+                {
+                    File.Create(fileName);
+                   // IFile fileLog = await folder.CreateFileAsync(dateName, CreationCollisionOption.FailIfExists);
+                    lbl.Text = "Log folder created";
+                }catch (Exception e)
+                {
+                    lbl.Text = "Failed to create log folder: " + e.Message;
+                }
+
+            }
+            
+
+        }
+
 
         /*
          * @author: Jess Merolla
@@ -166,15 +206,20 @@ namespace MobileScanApp
         /// @author Jessica Merolla
         /// @date 9/29/2020
         /// 
+        /// !!!!!!!!!!! Grab order header
         /// !!!!!!!!!!Toggle visibility in xml if csv file has not been picked
         /// 
         /// <summary>
-        /// Passes the string of csv data into the list view
+        /// Passes the string of csv data into the list view,
+        /// logd the curret order being packed into the day's log file
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
+            string appendText = "Order Packed: " + Environment.NewLine + csvdata + Environment.NewLine;
+            File.AppendAllText(fileName, appendText);
+
             await Navigation.PushAsync(new OrderListView(OrderItems));
 
         }
