@@ -80,11 +80,10 @@ namespace MobileScanApp
                 DueDate = "test"
             });
             ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
-            this.Content = Content;
-            MyListView.IsRefreshing = true;
+            this.Content = Content; //sets our content from our OrderListView.xaml
             MyListView.ItemsSource = myCollection; //sets all of our items in our listview
             myCol = myCollection; //temp IEnumerable for timer.
-            timer = new Timer(1000); //creates a timer that refreshes in a second of loading
+            timer = new Timer(50); //creates a timer that refreshes in a second of loading
             timer.Elapsed += OnTimerElapsed; //uses OnTimerElapsed method to update our listview
             timer.Start(); //starts our timer
         }
@@ -96,7 +95,7 @@ namespace MobileScanApp
 
         /*
          * Once our timer runs out call this method that refreshes our table to 
-         * myCollection and disable the timer from restarting.
+         * myCollection and disable the timer from restarting so it does not keep refreshing.
          */
         public void OnTimerElapsed(object o, ElapsedEventArgs e)
         {
@@ -118,18 +117,18 @@ namespace MobileScanApp
             /// <param name="sender">Used to access the currently selected OrderItem</param>
             /// <param name="e">Event handler for item tapping</param>
             async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            if (((OrderItem)e.Item).IsPacked == true)
             {
-                await DisplayAlert("Item already completed", "Enough of this item has already been scanned in for this order.", "OK");
-                ((ListView)sender).SelectedItem = null; //Deselect Item
-                return;
+                if (((OrderItem)e.Item).IsPacked == true)
+                {
+                    await DisplayAlert("Item already completed", "Enough of this item has already been scanned in for this order.", "OK");
+                    ((ListView)sender).SelectedItem = false; //Deselect Item
+                    return;
+                }
+                else
+                {
+                    await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
+                }
+                ((ListView)sender).SelectedItem = false; //Deselect Item
             }
-            else
-            {
-                await Navigation.PushAsync(new ScanPage((OrderItem)((ListView)sender).SelectedItem, OrderItems));
-            }
-        ((ListView)sender).SelectedItem = null; //Deselect Item
-        }
     }
 }
