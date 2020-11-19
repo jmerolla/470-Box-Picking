@@ -40,6 +40,7 @@ namespace MobileScanApp
         //Used to refernece the log file
         string fileName;
         IFile file;
+        String orderHeader; //holds the non-item information from the order file
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
 
@@ -80,7 +81,6 @@ namespace MobileScanApp
            
             bool doesExist = File.Exists(fileName);
             if (doesExist == true)
-            //    if (PCLHelper.IsFolderExistAsync(folderName).Result == true)
             {
                 file = folder.GetFileAsync(dateName).Result;
                 lbl.Text = "Log file already exists";
@@ -124,7 +124,7 @@ namespace MobileScanApp
         {
             try
             {
-                //Specifies csv file type for each platform
+                //Specifies text file type for each platform
                 string fileType = null;
                 if (Device.RuntimePlatform == Device.Android)
                 {
@@ -139,11 +139,10 @@ namespace MobileScanApp
                 //Opens file picker
                 FileData filedata = await CrossFilePicker.Current.PickFile();
 
-                //Loop file picker until a .csv is selected
+                //Loop file picker until a text file is selected
                 //skips if picking operation is cancelled
                 while (filedata!= null && filedata.FileName.Contains(fileType)!= true){
                       lbl.Text = "File Type must be .txt";
-                    //  lbl.Text = "File Type must be .csv";
                     filedata = await CrossFilePicker.Current.PickFile();
                 }
 
@@ -185,9 +184,11 @@ namespace MobileScanApp
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
 
-            orderText =  orderItemParser.getOrderItemInfo(orderText);
+            orderHeader = orderItemParser.getOrderHeader(orderText);
+           
+            orderText =  orderItemParser.removeEndOfOrder(orderText);
+            orderText = orderItemParser.removeHeaderInfo(orderText);
 
-            orderText = orderItemParser.extractHeaderInfo(orderText);
 
             ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
@@ -206,7 +207,7 @@ namespace MobileScanApp
         /// @author Jessica Merolla
         /// @date 9/29/2020
         /// 
-        /// !!!!!!!!!!! Grab order header
+        /// 
         /// !!!!!!!!!!Toggle visibility in xml if csv file has not been picked
         /// 
         /// <summary>
@@ -217,7 +218,8 @@ namespace MobileScanApp
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
-            string appendText = "Order Packed: " + Environment.NewLine + csvdata + Environment.NewLine;
+            string appendText = "Order Packed: " + Environment.NewLine + orderHeader
+                 + Environment.NewLine +  csvdata + Environment.NewLine;
             File.AppendAllText(fileName, appendText);
 
             await Navigation.PushAsync(new OrderListView(OrderItems));

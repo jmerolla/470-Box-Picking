@@ -17,6 +17,28 @@ namespace MobileScanApp
    class CSVHandler
     {
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="orderText"></param>
+        /// <returns></returns>
+        public String getOrderHeader(String orderText)
+        {
+            string pattern = @"Ln\sItem"; //find where item specific text begins
+            int matchInt = 1;
+
+            foreach (Match match in Regex.Matches(orderText, pattern))
+            {
+                matchInt = match.Index;
+
+            }
+            string headerText = orderText.Remove(matchInt);
+            headerText = headerText.Trim(' ');
+
+            return headerText;
+        }
+
+
+        /// <summary>
         /// @author Jess Merolla
         /// @date 10/15/2020
         /// Takes a string holding csv data and returns a string
@@ -24,7 +46,7 @@ namespace MobileScanApp
         /// </summary>
         /// <param name="orderText">The string holding all CSV data</param>
         /// <returns>The trimmed string of CSV data</returns>
-        public String getOrderItemInfo(String orderText)
+        public String removeEndOfOrder(String orderText)
         {
       
             //REMOVED AS THE ORDER HEADER WILL LIKELY NEED TO BE EXTRACTED AS WELL
@@ -62,7 +84,7 @@ namespace MobileScanApp
         /// </summary>
         /// <param name="orderText"></param>
         /// <returns></returns>
-        public String extractHeaderInfo(String orderText)
+        public String removeHeaderInfo(String orderText)
         {
             //TODO take whats needed from the header
 
