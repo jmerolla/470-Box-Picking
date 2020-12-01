@@ -82,14 +82,21 @@ namespace MobileScanApp
             bool doesExist = File.Exists(fileName);
             if (doesExist == true)
             {
-                file = folder.GetFileAsync(dateName).Result;
-                lbl.Text = "Log file already exists";
+                try { 
+                    //!!!!!!!!!!!!!!!!!!!!!!!Try Catch or make async???
+                     file = (await folder.GetFileAsync(dateName));//.Result;
+                    lbl.Text = "Log file already exists";
+                }catch(Exception e)
+                {
+                    lbl.Text = "Failed to grab log file: " + e.Message;
+                }
             }
             else
             {
                 try
                 {
-                    File.Create(fileName);
+                    var myFile = File.Create(fileName);
+                    myFile.Close(); //must close the filestream to access the file for the first time
                    // IFile fileLog = await folder.CreateFileAsync(dateName, CreationCollisionOption.FailIfExists);
                     lbl.Text = "Log folder created";
                 }catch (Exception e)
