@@ -74,57 +74,69 @@ namespace MobileScanApp
             var overlay = new ZXingDefaultOverlay
             {
                 TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString(),
-                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.LocationQOH,
+                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.LocationQOH + "\r\n\r\n" + " You can enter amount up to one less than quantity remaining.",
                 ShowFlashButton = true
             };
+
             EnterQtyToScan.Scale = 1;
             EnterQtyToScan.HorizontalOptions = LayoutOptions.Center;
             EnterQtyToScan.Margin = 50;
             EnterQtyToScan.BackgroundColor = Color.Gray;
             overlay.Children.AddVertical(EnterQtyToScan); //adding our "Enter Amount" button to our overlay
-            
+
             //Once button is clicked, create a new scanPage with the options and overlay set above
             btnScan.Clicked += async (a, s) =>
             {
                 scanPage = new ZXingScannerPage(options, overlay);
-                
+
                 overlay.FlashButtonClicked += (t, ed) =>
                 {
                     scanPage.ToggleTorch(); //If flash button is clicked it will toggle on/off.
                 };
 
-                ///This button is only able to be clicked one time.
-                EnterQtyToScan.Clicked += async (w, q) => {
-                        EnteredQty = true; //we pressed the "enter quantity to scan button
-                        while (tempEnteredAmount > scannableItem.QtyOrdered || tempEnteredAmount == -1) //while the amount we entered is greater than qtyOrdered or has not been entered yet.
+            ///This button is only able to be clicked one time.
+            EnterQtyToScan.Clicked += async (w, q) =>
+            {
+                EnteredQty = true; //we pressed the "enter quantity to scan button
+                while (tempEnteredAmount > scannableItem.QtyOrdered || tempEnteredAmount == -1) //while the amount we entered is greater than qtyOrdered or has not been entered yet.
+                {
+                    //Prompt that will have us enter the quantity we wish to scan at once
+                    string EnteredAmountToScan = await DisplayPromptAsync(scannableItem.Name, "How many of this item do you intend to pack?", "accept", "cancel", maxLength: 4, keyboard: Keyboard.Numeric);
+                    if (EnteredAmountToScan == null)
+                    {
+                        EnterQtyToScan.Unfocus();
+                        EnteredQty = false;
+                        return;
+                    }
+                    try
+                    {
+                        tempEnteredAmount = Int32.Parse(EnteredAmountToScan); //try and set our global var
+                        if (tempEnteredAmount > remainingScans) //if it exceeds our qty ordered we must display an error
                         {
-                            //Prompt that will have us enter the quantity we wish to scan at once
-                            string EnteredAmountToScan = await DisplayPromptAsync(scannableItem.Name, "How many of this item do you intend to pack?", "accept", "cancel", maxLength: 4, keyboard: Keyboard.Numeric);
-                            if(EnteredAmountToScan == null)
-                            {
-                                EnterQtyToScan.Unfocus();
-                                EnteredQty = false;
-                                return;
-                            }
-                            try
-                            {
-                                tempEnteredAmount = Int32.Parse(EnteredAmountToScan); //try and set our global var
-                                if (tempEnteredAmount > remainingScans) //if it exceeds our qty ordered we must display an error
-                                {
-                                    await DisplayAlert("Error", "Amount entered exceeds quantity ordered.", "OK");
-                                    tempEnteredAmount = -1;    
-                                }
-                            }
-                            catch
-                            {
-                                //If the number is negative or a decimal we display an Error message.
-                                await DisplayAlert("Error", "Invalid entry, must enter a whole number.", "OK");
-                            }
+                            await DisplayAlert("Error", "Amount entered exceeds quantity ordered.", "OK");
+                            tempEnteredAmount = -1;
                         }
-                        RemainingScans(); //After we leave our while loop we call our method to update our variables.
-                        overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + remainingScans.ToString(); //overlay to represent how many scans remain after we enter our amount.
-                        tempEnteredAmount = -1;
-                };
+                        if (tempEnteredAmount < 0) //if it is negative we must display an error
+                        {
+                            await DisplayAlert("Error", "Amount must be a positive number.", "OK");
+                            tempEnteredAmount = -1;
+                        }
+                        if (tempEnteredAmount == remainingScans) //if it equals our qty ordered we must display an error
+                        {
+                            await DisplayAlert("Error", "Amount entered must be one less than quantity ordered.", "OK");
+                            tempEnteredAmount = -1;
+                        }
+                    }
+                    catch
+                    {
+                        //If the number is a decimal we display an Error message.
+                        await DisplayAlert("Error", "Invalid entry, must enter a whole number.", "OK");
+                    }
+                }
+                RemainingScans(); //After we leave our while loop we call our method to update our variables.
+                overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + remainingScans.ToString(); //overlay to represent how many scans remain after we enter our amount.
+                tempEnteredAmount = -1; //allows us to reenter our loop if we press the button again.
+            };
                 //Once we capture a barcode we "BeginInvokeOnMainThread" to check what we scanned
                 scanPage.OnScanResult += (result) =>
                 {
@@ -137,8 +149,9 @@ namespace MobileScanApp
                             barCodeRead = result.Text; //sets barcode scanned in as a string
                             if (barCodeMatcher()) //If the scan matches the barcode from the OrderItem list, display the "Barcode Matches" alert.
                             {
-                                await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + RemainingScans() + " , " + "QtyScanned: " + qtyScanned.ToString(), "OK");
+                                RemainingScans(); //tells us how many more scan we have
                                 overlay.TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + remainingScans.ToString(); //overlay to represent how many scans remain.
+                                await DisplayAlert("Barcode Matches", result.Text + " , " + " Remaining Scans: " + remainingScans.ToString() + " , " + "QtyScanned: " + qtyScanned.ToString(), "OK");
                                 if (doneScanning)
                                 {
                                     await Navigation.PopModalAsync(); //Takes us back to the page with the scan button to know we are done.
@@ -151,8 +164,8 @@ namespace MobileScanApp
                             {
                                 await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString() + " , " + " Barcode does NOT match the one from the Order List.", "OK"); //Every barcode scanned that does not match will display as an alert.
                             }
-                                scanPage.IsAnalyzing = true; //Allows us to scan again once we "ok" the popup.
-                                _isScanning = true; //Allows us to be able to reenter our if() statement.
+                            scanPage.IsAnalyzing = true; //Allows us to scan again once we "ok" the popup.
+                            _isScanning = true; //Allows us to be able to reenter our if() statement.
                         }
                     });
                 };
@@ -174,7 +187,7 @@ namespace MobileScanApp
          * @Return - true if the barcode scanned matches the BarcodeID from OrderItem. false otherwise.
          */
         public Boolean barCodeMatcher()
-        { 
+        {
             if (scannableItem.BarcodeID == barCodeRead)
             {
                 return true;
@@ -196,7 +209,7 @@ namespace MobileScanApp
             decimal qtyOrdered = scannableItem.QtyOrdered;
             if (doneScanning != true)
             {
-                if(EnteredQty) //if we entered a custom amount to scan
+                if (EnteredQty) //if we entered a custom amount to scan
                 {
                     EnteredQty = false; //Make it false so next scan is not custom unless button is pressed again.
                     qtyScanned += tempEnteredAmount; //setting qtyScanned to add our entered quantity.
@@ -216,7 +229,7 @@ namespace MobileScanApp
                 {
                     doneScanning = false;
                 }
-            }    
+            }
             //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             remainingScans = (int)qtyOrdered - qtyScanned; //TEMP FIX ---NEED TO DISCUSS HOW A DECIMAL MIGHT AFFECT THIS
             return remainingScans;
