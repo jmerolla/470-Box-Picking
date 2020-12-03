@@ -1,12 +1,27 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MobileScanApp.MainPage">
+             x:Class="MobileScanApp.MainPage"
+             NavigationPage.HasNavigationBar="False">
     <StackLayout>
         <Button HorizontalOptions="Center" 
-            Text="Pick a File" Clicked="PickFileButton_Clicked"/>
-        <Label   HorizontalOptions="Center"  Text="File :" x:Name="lbl"/>
+                VerticalOptions="Center"
+                Margin="150"
+                Text="Pick a File" 
+                Clicked="PickFileButton_Clicked"
+                BorderColor="DarkGray"/>
+        <Label  HorizontalOptions="Center"  
+                VerticalOptions="Center"
+                Margin="25"
+                Text="File :" 
+                x:Name="lbl"/>
         <Button HorizontalOptions="Center" 
-            Text="Confirm Order" Clicked="ConfirmOrderButton_Clicked"/>
+                VerticalOptions="Center"
+                Margin="100"
+                Text="Confirm Order" 
+                Clicked="ConfirmOrderButton_Clicked"
+                IsVisible="False"
+                x:Name="ConfirmOrderButton"
+                BorderColor="DarkGray"/>
     </StackLayout>
 </ContentPage>

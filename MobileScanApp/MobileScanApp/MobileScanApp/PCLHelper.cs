@@ -34,7 +34,12 @@ using System.Threading.Tasks;
                 }
                 return false;
             }
-
+            /// <summary>
+            /// NOTE: Crashes for some reason
+            /// </summary>
+            /// <param name="folderName"></param>
+            /// <param name="rootFolder"></param>
+            /// <returns></returns>
             public async static Task<bool> IsFolderExistAsync(this string folderName, IFolder rootFolder = null)
             {
                 // get hold of the file system  

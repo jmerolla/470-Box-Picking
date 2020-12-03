@@ -16,6 +16,7 @@ using System.Globalization;
 using System.Collections.ObjectModel;
 using System.Text.RegularExpressions;
 using System.Security.Cryptography.X509Certificates;
+using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace MobileScanApp
 {
@@ -36,9 +37,10 @@ namespace MobileScanApp
      */
     public partial class MainPage : ContentPage
     {
-        //uses PCLStorage to access cross platform filesystems
-        // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
-
+        //Used to refernece the log file
+        string fileName;
+        IFile file;
+        String orderHeader; //holds the non-item information from the order file
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
 
@@ -49,19 +51,65 @@ namespace MobileScanApp
         {
             InitializeComponent();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
-            // IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
+            createLogFolder();
+
+           
 
         }
 
-        /* @author Jess Merolla
-         * 
-         * Navigates over to the ScanPage (for Scanning Barcodes)
-         * 
-         * !!!!!!!!!!!!TO-DO Remove this option from the main page on startup
-         * 
-         */
-        
+        /// <summary>
+        /// Author: Jess Merolla
+        /// Date: 11/17/2020
+        /// NOTE: Pretty sure this is Windows specific atm
+        /// 
+        /// Checks for a log file for the current date, makes one
+        /// if it does not exist.
+        /// </summary>
+        private async void createLogFolder()
+        {
+            String dateName = DateTime.Now.ToString("dd-MM-yyyy");
+          //  String fileName = dateName;
+            IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
+
+           // Environment.StorageApplicationPermissions.FutureAccessList.Add(Environment
+           //  .GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+            //help
+            fileName = Path.Combine(Environment
+             .GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dateName);
+
+           
+            bool doesExist = File.Exists(fileName);
+            if (doesExist == true)
+            {
+                try { 
+                    //!!!!!!!!!!!!!!!!!!!!!!!Try Catch or make async???
+                     file = (await folder.GetFileAsync(dateName));//.Result;
+                    lbl.Text = "Log file already exists";
+                }catch(Exception e)
+                {
+                    lbl.Text = "Failed to grab log file: " + e.Message;
+                }
+            }
+            else
+            {
+                try
+                {
+                    var myFile = File.Create(fileName);
+                    myFile.Close(); //must close the filestream to access the file for the first time
+                   // IFile fileLog = await folder.CreateFileAsync(dateName, CreationCollisionOption.FailIfExists);
+                    lbl.Text = "Log folder created";
+                }catch (Exception e)
+                {
+                    lbl.Text = "Failed to create log folder: " + e.Message;
+                }
+
+            }
+            
+
+        }
+
+
         /*
          * @author: Jess Merolla
          * @date: 9/25/2020
@@ -83,25 +131,25 @@ namespace MobileScanApp
         {
             try
             {
-                //Specifies csv file type for each platform
+                //Specifies text file type for each platform
                 string fileType = null;
                 if (Device.RuntimePlatform == Device.Android)
                 {
-                    fileType = "csv";
+                    fileType = "txt";
                 }
                 if (Device.RuntimePlatform == Device.UWP)
                 {
                   
-                    fileType = ".csv";
+                    fileType = ".txt";
                 }
 
                 //Opens file picker
                 FileData filedata = await CrossFilePicker.Current.PickFile();
 
-                //Loop file picker until a .csv is selected
+                //Loop file picker until a text file is selected
                 //skips if picking operation is cancelled
                 while (filedata!= null && filedata.FileName.Contains(fileType)!= true){
-                    lbl.Text = "File Type must be .csv";
+                      lbl.Text = "File Type must be .txt";
                     filedata = await CrossFilePicker.Current.PickFile();
                 }
 
@@ -116,8 +164,8 @@ namespace MobileScanApp
                         lbl.Text = filedata.FileName;
                         csvdata = ReadInCSV(filedata);
                         System.Diagnostics.Debug.Write(csvdata);
-                        lbl.Text = csvdata;
-
+                        //lbl.Text = csvdata;
+                        ConfirmOrderButton.IsVisible = true; //shows our confirm button after we choose a file
                     }
                 }
             }
@@ -143,14 +191,22 @@ namespace MobileScanApp
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
 
-           orderText =  orderItemParser.getOrderItemInfo(orderText);
+            orderHeader = orderItemParser.getOrderHeader(orderText);
+           
+            orderText =  orderItemParser.removeEndOfOrder(orderText);
+            orderText = orderItemParser.removeHeaderInfo(orderText);
 
-            ItemsList = orderText.Split(',').ToList();
-            int ORDER_COLUMNS = 12;
 
-            orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
+            ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-            OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
+
+            //OLD CODE FOR CSV
+            // int ORDER_COLUMNS = 12;
+            // orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
+           // OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
+
+            //Parse OrderItems from List (txt version)
+            OrderItems = orderItemParser.parseOrderItemsFromList(ItemsList);
             
             return orderText;
         }
@@ -158,16 +214,22 @@ namespace MobileScanApp
         /// @author Jessica Merolla
         /// @date 9/29/2020
         /// 
-        /// !!!!!!!!!!TODO pass CSV into list view, toggle visibility in xml if csv file has not been picked
+        /// 
+        /// !!!!!!!!!!Toggle visibility in xml if csv file has not been picked
         /// 
         /// <summary>
-        /// Passes the string of csv data into the list view
+        /// Passes the string of csv data into the list view,
+        /// logd the curret order being packed into the day's log file
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
-            await Navigation.PushAsync(new OrderListView(ItemsList));
+            string appendText = "Order Packed: " + Environment.NewLine + orderHeader
+                 + Environment.NewLine +  csvdata + Environment.NewLine;
+            File.AppendAllText(fileName, appendText);
+
+            await Navigation.PushAsync(new OrderListView(OrderItems));
 
         }
     }
