@@ -23,6 +23,7 @@ namespace MobileScanApp
         public IList<OrderItem> OrderItems { get;  set; }
         IEnumerable myCol;
         Timer timer;
+        ObservableCollection<OrderItem> myCollection;
         /// @author Jess Merolla
         /// @date   9/30/2020
         /// <summary>
@@ -35,6 +36,8 @@ namespace MobileScanApp
             this.OrderItems = OrderItems;
             //This is a fake example using my deoderant barcode
             //REMOVE THESE WHEN TESTING IS DONE!!!
+            //SAMPLE ITEMS FOR SCANNING
+            /*
             OrderItems.Add(new OrderItem
             {
                 IsPacked= false,
@@ -79,7 +82,8 @@ namespace MobileScanApp
                 ExtPrice = "20.00",
                 DueDate = "test"
             });
-            ObservableCollection<OrderItem> myCollection = new ObservableCollection<OrderItem>(OrderItems);
+            */
+            myCollection = new ObservableCollection<OrderItem>(OrderItems);
             this.Content = Content; //sets our content from our OrderListView.xaml
             MyListView.ItemsSource = myCollection; //sets all of our items in our listview
             myCol = myCollection; //temp IEnumerable for timer.
@@ -91,32 +95,69 @@ namespace MobileScanApp
         protected override void OnAppearing()
         {
             timer.AutoReset = true; //on the page appearing timer should autoReset.
+
         }
 
         /*
          * Once our timer runs out call this method that refreshes our table to 
          * myCollection and disable the timer from restarting so it does not keep refreshing.
+         * 
+         *  TODO: (@author Jess) add a check to see if scanning is complete for all items and then return to main page
          */
-        public void OnTimerElapsed(object o, ElapsedEventArgs e)
+         public void OnTimerElapsed(object o, ElapsedEventArgs e)
         {
             Device.BeginInvokeOnMainThread(() =>
             {
                 MyListView.ItemsSource = null;
                 MyListView.ItemsSource = myCol;
                 timer.AutoReset = false;
+
+                Boolean allPacked = true;
+                foreach (var items in myCollection)
+                {
+                    if (items.IsPacked == false)
+                    {
+                        allPacked = false;
+                    }
+                }
+
+                if (allPacked == true)   //all items have been packed
+                {
+
+                    returnToMainPage();
+                }
             });
+
+           
+
         }
-            /// <summary>
-            /// 
-            /// @author Jess Merolla, Graham Hallman-Taylor
-            /// @date 9/30/2020
-            /// 
-            /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
-            /// 
-            /// </summary>
-            /// <param name="sender">Used to access the currently selected OrderItem</param>
-            /// <param name="e">Event handler for item tapping</param>
-            async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
+
+        /// <summary>
+        /// Navigates back to the main page to select a new Order file
+        /// </summary>
+        async void returnToMainPage()
+        {
+            try
+            {
+                await Navigation.PopAsync();    //return to MainPage.xaml.cs
+                //await Navigation.PushAsync(new MainPage());
+            }
+            catch (Exception f)
+            {
+                await DisplayAlert("Return to MainPage failed", f.Message, "OK");
+            }
+        }
+        /// <summary>
+        /// 
+        /// @author Jess Merolla, Graham Hallman-Taylor
+        /// @date 9/30/2020
+        /// 
+        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
+        /// 
+        /// </summary>
+        /// <param name="sender">Used to access the currently selected OrderItem</param>
+        /// <param name="e">Event handler for item tapping</param>
+        async void Handle_ItemTapped(object sender, ItemTappedEventArgs e)
             {
                 if (((OrderItem)e.Item).IsPacked == true)
                 {

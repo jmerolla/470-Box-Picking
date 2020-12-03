@@ -44,7 +44,7 @@ namespace MobileScanApp
         String csvdata;     //make the csv info globally accessible
         List<String> ItemsList = new List<String>();
 
-        CSVHandler orderItemParser = new CSVHandler();    //used to parse the csv order sheets
+        TextFileHandler orderItemParser = new TextFileHandler();    //used to parse the csv order sheets
         string[,] orderArray;   //the csv successfully parsed 
         public List<OrderItem> OrderItems { get; set; } //used to pass the list of items
         public MainPage()
