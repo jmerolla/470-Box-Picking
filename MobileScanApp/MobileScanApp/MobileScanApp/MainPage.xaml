@@ -3,18 +3,22 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.MainPage"
              NavigationPage.HasNavigationBar="False">
+    <!--First page you see when loading the application, has no nav bar or back button-->
     <StackLayout>
+        <!--Choose a .txt file to load in by pressing this button-->
         <Button HorizontalOptions="Center" 
                 VerticalOptions="Center"
                 Margin="150"
                 Text="Pick a File" 
                 Clicked="PickFileButton_Clicked"
                 BorderColor="DarkGray"/>
+        <!--Label tells us our file name so we know it is correct-->
         <Label  HorizontalOptions="Center"  
                 VerticalOptions="Center"
                 Margin="25"
                 Text="File :" 
                 x:Name="lbl"/>
+        <!--Button to go to the OrderListView page, appears once a .txt file is chosen-->
         <Button HorizontalOptions="Center" 
                 VerticalOptions="Center"
                 Margin="100"
