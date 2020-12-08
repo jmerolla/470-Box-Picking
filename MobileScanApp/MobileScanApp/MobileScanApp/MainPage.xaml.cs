@@ -29,10 +29,6 @@ namespace MobileScanApp
      * This class initializes the start-up page.
      * Contains a single button to begin scanning in the initial
      * order.
-     * 
-     *  
-     *
-     *
      *
      */
     public partial class MainPage : ContentPage
@@ -45,14 +41,13 @@ namespace MobileScanApp
         List<String> ItemsList = new List<String>();
 
         TextFileHandler orderItemParser = new TextFileHandler();    //used to parse the csv order sheets
-        string[,] orderArray;   //the csv successfully parsed 
         public List<OrderItem> OrderItems { get; set; } //used to pass the list of items
         public MainPage()
         {
             InitializeComponent();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
 
-            createLogFolder();
+            createLogFile();
 
            
 
@@ -66,24 +61,20 @@ namespace MobileScanApp
         /// Checks for a log file for the current date, makes one
         /// if it does not exist.
         /// </summary>
-        private async void createLogFolder()
+        private async void createLogFile()
         {
             String dateName = DateTime.Now.ToString("dd-MM-yyyy");
-          //  String fileName = dateName;
             IFolder folder = PCLStorage.FileSystem.Current.LocalStorage;
 
-           // Environment.StorageApplicationPermissions.FutureAccessList.Add(Environment
-           //  .GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
-            //help
             fileName = Path.Combine(Environment
              .GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dateName);
 
            
             bool doesExist = File.Exists(fileName);
-            if (doesExist == true)
+            if (doesExist == true)  //file exists, grab it
             {
                 try { 
-                    //!!!!!!!!!!!!!!!!!!!!!!!Try Catch or make async???
+                    //Must be async or file selection will fail
                      file = (await folder.GetFileAsync(dateName));//.Result;
                     lbl.Text = "Log file already exists";
                 }catch(Exception e)
@@ -93,15 +84,17 @@ namespace MobileScanApp
             }
             else
             {
+                //file doesn't exist, create it
+            }
+            {
                 try
                 {
                     var myFile = File.Create(fileName);
                     myFile.Close(); //must close the filestream to access the file for the first time
-                   // IFile fileLog = await folder.CreateFileAsync(dateName, CreationCollisionOption.FailIfExists);
-                    lbl.Text = "Log folder created";
+                    lbl.Text = "Log file created";
                 }catch (Exception e)
                 {
-                    lbl.Text = "Failed to create log folder: " + e.Message;
+                    lbl.Text = "Failed to create log file: " + e.Message;
                 }
 
             }
@@ -119,10 +112,6 @@ namespace MobileScanApp
          * on a button click
          *
          *@param: object sender, EventArgs e
-         *
-         *
-         * !!!!!!!!!!!TO-DO check file type restrictions, do something with the file
-         * 
          * 
          * Graham added a call to ReadInCSV at the end of this method 9/27/2020 
          * 
@@ -199,13 +188,6 @@ namespace MobileScanApp
 
             ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
 
-
-            //OLD CODE FOR CSV
-            // int ORDER_COLUMNS = 12;
-            // orderArray = orderItemParser.parseOrderItemsIntoArray(ItemsList, ORDER_COLUMNS);
-           // OrderItems = orderItemParser.arrayToOrderItemList(orderArray);
-
-            //Parse OrderItems from List (txt version)
             OrderItems = orderItemParser.parseOrderItemsFromList(ItemsList);
             
             return orderText;

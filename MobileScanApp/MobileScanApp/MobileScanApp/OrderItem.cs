@@ -5,6 +5,12 @@ using Xamarin.Forms;
 
 namespace MobileScanApp
 {
+    /// <summary>
+    /// @author Jess Merolla
+    /// @date 10/14/2020
+    /// 
+    /// Contains the different fields that an Order Item will hold
+    /// </summary>
     public class OrderItem
     {
         
