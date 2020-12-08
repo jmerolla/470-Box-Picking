@@ -190,7 +190,7 @@ namespace MobileScanApp
 
             //Regex used to identify order item data
             Regex ln = new Regex(@"[0-9]{1,2}", RegexOptions.Compiled | RegexOptions.Singleline);
-            Regex ItemNumber = new Regex(@"[0-9]{12}", RegexOptions.Compiled | RegexOptions.Singleline); //Spencer changed the 14 to a 12 for testing purposes.
+            Regex ItemNumber = new Regex(@"[0-9]{14}", RegexOptions.Compiled | RegexOptions.Singleline);
             Regex ItemName = new Regex(@"[a-zA-Z]{2,}", RegexOptions.Compiled | RegexOptions.Singleline);
             Regex Location = new Regex(@"[a-zA-Z]{1}[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
 
