@@ -2,30 +2,47 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.MainPage"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#003049">
     <!--First page you see when loading the application, has no nav bar or back button-->
-    <StackLayout>
+    <FlexLayout  BackgroundColor="White"
+                 Margin="50"
+                 Direction="Column"
+                 AlignContent="Center"
+                 AlignItems="Center"
+                 JustifyContent="SpaceEvenly">
+        
         <!--Choose a .txt file to load in by pressing this button-->
         <Button HorizontalOptions="Center" 
                 VerticalOptions="Center"
-                Margin="150"
+                WidthRequest="500"
+                HeightRequest="200"
+                BorderWidth="5"
+                FontSize="36"
                 Text="Pick a File" 
                 Clicked="PickFileButton_Clicked"
-                BorderColor="DarkGray"/>
+                BackgroundColor="LightGray"
+                BorderColor="#D62828" 
+                FontAttributes="Bold"/>
+                
         <!--Label tells us our file name so we know it is correct-->
         <Label  HorizontalOptions="Center"  
                 VerticalOptions="Center"
-                Margin="25"
+                FontSize="36"
                 Text="File :" 
                 x:Name="lbl"/>
         <!--Button to go to the OrderListView page, appears once a .txt file is chosen-->
         <Button HorizontalOptions="Center" 
                 VerticalOptions="Center"
-                Margin="100"
                 Text="Confirm Order" 
+                WidthRequest="400"
+                HeightRequest="100"
+                FontSize="24"
+                BackgroundColor="LightGray"
+                BorderColor="#D62828"
+                BorderWidth="5"
                 Clicked="ConfirmOrderButton_Clicked"
                 IsVisible="False"
-                x:Name="ConfirmOrderButton"
-                BorderColor="DarkGray"/>
-    </StackLayout>
+                x:Name="ConfirmOrderButton" FontAttributes="Bold"/>
+    </FlexLayout>
 </ContentPage>

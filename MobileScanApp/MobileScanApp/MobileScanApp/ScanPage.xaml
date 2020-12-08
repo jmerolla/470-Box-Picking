@@ -3,32 +3,42 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              x:Class="MobileScanApp.ScanPage"
              NavigationPage.HasBackButton="False"
-             NavigationPage.HasNavigationBar="False"> 
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#003049"> 
     <!--have no back button or Nav bar at top-->
 
     <ContentPage.Content>
-        <StackLayout
-            HorizontalOptions="Center" 
-            VerticalOptions="Center"
-            Orientation="Vertical">
+        <FlexLayout  BackgroundColor="White"
+                 Margin="50"
+                 Direction="Column"
+                 AlignContent="Center"
+                 AlignItems="Center"
+                 JustifyContent="SpaceEvenly">
             <!--Tells us what item we are about to scan-->
             <Label
                     x:Name="itemLabel"
                     Text="{Binding itemLabels}"
                     HorizontalOptions="Center"
                     VerticalOptions="Center"
+                    FontSize="36"
                     Padding="50">
             </Label>
             <!--Button to confirm correct item was chosen-->
             <Button 
                     x:Name = "btnScan"
                     Text = "Scan"
+                    FontSize="36"
+                FontAttributes="Bold"
+                    HeightRequest="150"
+                    WidthRequest="200"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
-                    BorderColor="DarkGray">
+                    BackgroundColor="LightGray"
+                    BorderColor="#D62828" >
             </Button>
             <!--Label for wrong item tapped-->
             <Label
+                    FontSize="36"
                     Text = "If this is not the item you intend on scanning:"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
@@ -38,10 +48,15 @@
             <Button  
                     x:Name = "btnBack"
                     Text = "Back"
+                    FontSize="24"
+                HeightRequest="100"
+                WidthRequest="150"
+                FontAttributes="Bold"
                     HorizontalOptions = "Center"
                     VerticalOptions = "Center"
-                    BorderColor="DarkGray">
+                    BackgroundColor="LightGray"
+                    BorderColor="#D62828">
             </Button>
-        </StackLayout>
+        </FlexLayout>
     </ContentPage.Content>
 </ContentPage>

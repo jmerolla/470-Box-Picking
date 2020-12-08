@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="MobileScanApp.OrderListView"
              NavigationPage.HasBackButton="False"
-             NavigationPage.HasNavigationBar="False">
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#003049">
     <!--have no back button or Nav bar at top-->
 
     <NavigationPage.TitleView>
@@ -16,17 +17,18 @@
     </NavigationPage.TitleView>
     <ContentPage.Content>
     <!--Adding our ListView to our page-->
-    <ListView x:Name="MyListView"
+        <ListView x:Name="MyListView"
             ItemsSource="{Binding OrderItems}"
             ItemTapped="Handle_ItemTapped"
-            CachingStrategy="RecycleElement">
-
-     <!--Custom View Cells-->
+            CachingStrategy="RecycleElement"
+            Margin="10"
+            BackgroundColor="White">
+            <!--Custom View Cells-->
             <ListView.Header>
-                <StackLayout>
+                <StackLayout BackgroundColor="LightGray">
                     <Grid>
                         <!--sets our columns to how we want them. First column is column 0.-->
-                        <Grid.ColumnDefinitions>
+                        <Grid.ColumnDefinitions >
                             <ColumnDefinition Width="0.1*" />
                             <ColumnDefinition Width="0.2*" />
                             <ColumnDefinition Width="0.05*" />
@@ -39,16 +41,16 @@
                             <ColumnDefinition Width="0.1*" />
                         </Grid.ColumnDefinitions>
                         <!--Adding in our headers in the correct columns-->
-                        <Label Grid.Column="0" Text="Packed" HorizontalOptions="Center" />
-                        <Label Grid.Column="1" Text="Product Name" />
-                        <Label Grid.Column="2" Text="UM" />
-                        <Label Grid.Column="3" Text="Qty Ordered" />
-                        <Label Grid.Column="4" Text="Qty Open" />
-                        <Label Grid.Column="5" Text="Ext Price" />
-                        <Label Grid.Column="6" Text="Due Date" />
-                        <Label Grid.Column="7" Text="Pallet Qty" />
-                        <Label Grid.Column="8" Text="Carton Qty" />
-                        <Label Grid.Column="9" Text="Location (QOH in CTs)" />
+                        <Label Grid.Column="0" Text="Packed" HorizontalOptions="Center" FontAttributes="Bold"/>
+                        <Label Grid.Column="1" Text="Product Name" FontAttributes="Bold" />
+                        <Label Grid.Column="2" Text="UM" FontAttributes="Bold"/>
+                        <Label Grid.Column="3" Text="Qty Ordered" FontAttributes="Bold"/>
+                        <Label Grid.Column="4" Text="Qty Open" FontAttributes="Bold"/>
+                        <Label Grid.Column="5" Text="Ext Price" FontAttributes="Bold"/>
+                        <Label Grid.Column="6" Text="Due Date" FontAttributes="Bold"/>
+                        <Label Grid.Column="7" Text="Pallet Qty" FontAttributes="Bold"/>
+                        <Label Grid.Column="8" Text="Carton Qty" FontAttributes="Bold"/>
+                        <Label Grid.Column="9" Text="Location (QOH in CTs)" FontAttributes="Bold"/>
                     </Grid>
                 </StackLayout>
             </ListView.Header>
