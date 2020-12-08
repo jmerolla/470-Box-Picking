@@ -14,7 +14,7 @@ namespace MobileScanApp
     /// 
     /// Methods for extracting CSV data and turning that data into OrderItems
     /// </summary>
-   class CSVHandler
+   class TextFileHandler
     {
         /// <summary>
         /// 
@@ -190,7 +190,8 @@ namespace MobileScanApp
 
             //Regex used to identify order item data
             Regex ln = new Regex(@"[0-9]{1,2}", RegexOptions.Compiled | RegexOptions.Singleline);
-            Regex ItemNumber = new Regex(@"[0-9]{14}", RegexOptions.Compiled | RegexOptions.Singleline);
+            //item number originally just {14}
+            Regex ItemNumber = new Regex(@"[0-9]{10,}", RegexOptions.Compiled | RegexOptions.Singleline);
             Regex ItemName = new Regex(@"[a-zA-Z]{2,}", RegexOptions.Compiled | RegexOptions.Singleline);
             Regex Location = new Regex(@"[a-zA-Z]{1}[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
 
