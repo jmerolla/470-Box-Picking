@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Xamarin.Forms;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
@@ -34,7 +35,7 @@ namespace MobileScanApp
         ZXingScannerPage scanPage; //creating our ZXing scan page
         public IList<OrderItem> OIList; //Creating OrderItemList to change our components of the list
         int tempEnteredAmount = -1; //amount of scans a user chooses on pop up. Set to 0 to activate if() statement.
-        bool EnteredQty = false; //tells us if we have entered quantity to scan.
+        bool EnteredQtyBool = false; //tells us if we have entered quantity to scan.
 
         public ScanPage(OrderItem scannableItem, IList<OrderItem> list)
         {
@@ -73,17 +74,34 @@ namespace MobileScanApp
              */
             var overlay = new ZXingDefaultOverlay
             {
-                TopText = "Quantity scanned: " + qtyScanned.ToString() + "\r\n\r\n" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString(),
-                BottomText = "Item Scanning: " + scannableItem.Name + "\r\n\r\n" + "Located in Section: " + scannableItem.LocationQOH + "\r\n\r\n" + " You can enter amount up to one less than quantity remaining.",
-                ShowFlashButton = true
+                TopText = "Quantity scanned: " + qtyScanned.ToString() + "\t" + "Quantity remaining: " + scannableItem.QtyOrdered.ToString(),
+                BottomText = "Item Scanning: " + scannableItem.Name + "\r" + "Located in Section: " + scannableItem.LocationQOH.Replace(Environment.NewLine, " ") + "\r" + " You can enter amount up to one less than quantity remaining."
             };
+            //Removes red line across screen
+            var redLine = overlay.Children.First(x => x.BackgroundColor == Color.Red);
+            overlay.Children.Remove(redLine);
 
+            //Removes top background color
+            var topLine = overlay.Children.First();
+            overlay.Children.Remove(topLine);
+
+            //Adding a clear lines to have more space to scan.
+            var clearLine = overlay.Children[2];
+            overlay.Children.AddVertical(clearLine);
+
+            overlay.Children.AddVertical(clearLine);
+
+            //Removes bottom background color
+            var bottomLine = overlay.Children.First();
+            overlay.Children.Remove(bottomLine);
+
+            //Setting our elements for our button on the scanner page
             EnterQtyToScan.Scale = 1;
             EnterQtyToScan.HorizontalOptions = LayoutOptions.Center;
-            EnterQtyToScan.Margin = 50;
+            EnterQtyToScan.Margin = 20;
             EnterQtyToScan.BackgroundColor = Color.Gray;
-            overlay.Children.AddVertical(EnterQtyToScan); //adding our "Enter Amount" button to our overlay
 
+            overlay.Children.AddVertical(EnterQtyToScan); //adding our "Enter Amount" button to our overlay
             //Once button is clicked, create a new scanPage with the options and overlay set above
             btnScan.Clicked += async (a, s) =>
             {
@@ -97,19 +115,20 @@ namespace MobileScanApp
             ///This button is only able to be clicked one time.
             EnterQtyToScan.Clicked += async (w, q) =>
             {
-                EnteredQty = true; //we pressed the "enter quantity to scan button
+                EnteredQtyBool = true; //we pressed the "enter quantity to scan button
                 while (tempEnteredAmount > scannableItem.QtyOrdered || tempEnteredAmount == -1) //while the amount we entered is greater than qtyOrdered or has not been entered yet.
                 {
                     //Prompt that will have us enter the quantity we wish to scan at once
                     string EnteredAmountToScan = await DisplayPromptAsync(scannableItem.Name, "How many of this item do you intend to pack?", "accept", "cancel", maxLength: 4, keyboard: Keyboard.Numeric);
                     if (EnteredAmountToScan == null)
                     {
-                        EnterQtyToScan.Unfocus();
-                        EnteredQty = false;
+                        EnterQtyToScan.Unfocus(); //Cancel button pressed we unfocus the prompt.
+                        EnteredQtyBool = false; 
                         return;
                     }
                     try
                     {
+                        //tempEnteredAmount must be a valid number (0-one less than remainingScans) otherwise you will get an Error message.
                         tempEnteredAmount = Int32.Parse(EnteredAmountToScan); //try and set our global var
                         if (tempEnteredAmount > remainingScans) //if it exceeds our qty ordered we must display an error
                         {
@@ -197,7 +216,7 @@ namespace MobileScanApp
 
         /**
          * !!!!!!!!!!!!Edited by Jess Merolla 11/4/2020
-         * Edited by Spencer Dusi 10-12-20.
+         * Created by Spencer Dusi 10-12-20.
          * This method takes the quantity ordered for the specific item
          * and each time the item is scanned it adds to the counter until
          * it has been scanned the amount of times the quantity desires.
@@ -209,9 +228,9 @@ namespace MobileScanApp
             decimal qtyOrdered = scannableItem.QtyOrdered;
             if (doneScanning != true)
             {
-                if (EnteredQty) //if we entered a custom amount to scan
+                if (EnteredQtyBool) //if we entered a custom amount to scan
                 {
-                    EnteredQty = false; //Make it false so next scan is not custom unless button is pressed again.
+                    EnteredQtyBool = false; //Make it false so next scan is not custom unless button is pressed again.
                     qtyScanned += tempEnteredAmount; //setting qtyScanned to add our entered quantity.
                 }
                 else
@@ -230,8 +249,7 @@ namespace MobileScanApp
                     doneScanning = false;
                 }
             }
-            //TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            remainingScans = (int)qtyOrdered - qtyScanned; //TEMP FIX ---NEED TO DISCUSS HOW A DECIMAL MIGHT AFFECT THIS
+            remainingScans = (int)qtyOrdered - qtyScanned;
             return remainingScans;
         }
     }

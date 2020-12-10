@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
              x:Class="MobileScanApp.ScanPage"
              NavigationPage.HasBackButton="False"
-             NavigationPage.HasNavigationBar="False"> 
+             NavigationPage.HasNavigationBar="False">
     <!--have no back button or Nav bar at top-->
-
     <ContentPage.Content>
         <StackLayout
             HorizontalOptions="Center" 

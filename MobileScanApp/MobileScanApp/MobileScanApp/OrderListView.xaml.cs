@@ -2,13 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Timers;
-using System.Windows.Input;
 using Xamarin.Forms;
-using Xamarin.Forms.Internals;
 using Xamarin.Forms.Xaml;
 
 namespace MobileScanApp
@@ -22,7 +16,6 @@ namespace MobileScanApp
     {
         public IList<OrderItem> OrderItems { get;  set; }
         IEnumerable myCol;
-        Timer timer;
         ObservableCollection<OrderItem> myCollection;
         /// @author Jess Merolla
         /// @date   9/30/2020
@@ -38,35 +31,6 @@ namespace MobileScanApp
             //REMOVE THESE WHEN TESTING IS DONE!!!
             //SAMPLE ITEMS FOR SCANNING
             /*
-            OrderItems.Add(new OrderItem
-            {
-                IsPacked= false,
-                Name = "1134HP Acrylic 0.5 mil foil",
-                LocationQOH = "r5",
-                BarcodeID = "012044038918",
-                PalletQty = 1,
-                CartonQty = 5,
-                QtyOrdered = 6,
-                QtyOpen = 6,
-                UM = "RL",
-                ExtPrice = "20.00",
-                DueDate = "test"
-            });
-            //This is an actual example from the box from AD
-            OrderItems.Add(new OrderItem
-            {
-                IsPacked = false,
-                Name = "0808HP Acrylic 2.0 mil foil",
-                LocationQOH = "s16",
-                BarcodeID = "655616007419",
-                PalletQty = 2,
-                CartonQty = 10,
-                QtyOrdered = 432,
-                QtyOpen = 432,
-                UM = "RL",
-                ExtPrice = "20.00",
-                DueDate = "test"
-            });
             //Graham's package of nails
             OrderItems.Add(new OrderItem
             {
@@ -87,32 +51,16 @@ namespace MobileScanApp
             this.Content = Content; //sets our content from our OrderListView.xaml
             MyListView.ItemsSource = myCollection; //sets all of our items in our listview
             myCol = myCollection; //temp IEnumerable for timer.
-            timer = new Timer(50); //creates a timer that refreshes in a second of loading
-            timer.Elapsed += OnTimerElapsed; //uses OnTimerElapsed method to update our listview
-            timer.Start(); //starts our timer
         }
 
         protected override void OnAppearing()
         {
-            timer.AutoReset = true; //on the page appearing timer should autoReset.
-
-        }
-
-        /*
-         * Once our timer runs out call this method that refreshes our table to 
-         * myCollection and disable the timer from restarting so it does not keep refreshing.
-         * 
-         *  TODO: (@author Jess) add a check to see if scanning is complete for all items and then return to main page
-         */
-         public void OnTimerElapsed(object o, ElapsedEventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(() =>
+            Device.BeginInvokeOnMainThread(async () =>
             {
-                MyListView.ItemsSource = null;
-                MyListView.ItemsSource = myCol;
-                timer.AutoReset = false;
-
                 Boolean allPacked = true;
+                MyListView.ItemsSource = null; //Moved itemsource here from onTimerElapsed.
+                MyListView.ItemsSource = myCol;//keep comment for bug
+
                 foreach (var items in myCollection)
                 {
                     if (items.IsPacked == false)
@@ -123,14 +71,18 @@ namespace MobileScanApp
 
                 if (allPacked == true)   //all items have been packed
                 {
-
+                    await DisplayAlert("Order Complete", "You have scanned all items in this order", "OK");
                     returnToMainPage();
                 }
             });
-
-           
-
         }
+
+        /*
+         * Once our timer runs out call this method that refreshes our table to 
+         * myCollection and disable the timer from restarting so it does not keep refreshing.
+         * 
+         *  TODO: (@author Jess) add a check to see if scanning is complete for all items and then return to main page
+         */
 
         /// <summary>
         /// Navigates back to the main page to select a new Order file
