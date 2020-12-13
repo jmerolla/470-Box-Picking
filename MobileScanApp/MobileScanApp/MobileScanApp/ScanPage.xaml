@@ -1,9 +1,62 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
-             x:Class="MobileScanApp.ScanPage">
+             x:Class="MobileScanApp.ScanPage"
+             NavigationPage.HasBackButton="False"
+             NavigationPage.HasNavigationBar="False"
+             BackgroundColor="#003049"> 
+    <!--have no back button or Nav bar at top-->
+
     <ContentPage.Content>
-        <StackLayout BackgroundColor="LightGray">
-        </StackLayout>
+        <FlexLayout  BackgroundColor="White"
+                 Margin="50"
+                 Direction="Column"
+                 AlignContent="Center"
+                 AlignItems="Center"
+                 JustifyContent="SpaceEvenly">
+            <!--Tells us what item we are about to scan-->
+            <Label
+                    x:Name="itemLabel"
+                    Text="{Binding itemLabels}"
+                    HorizontalOptions="Center"
+                    VerticalOptions="Center"
+                    FontSize="36"
+                    Padding="50">
+            </Label>
+            <!--Button to confirm correct item was chosen-->
+            <Button 
+                    x:Name = "btnScan"
+                    Text = "Scan"
+                    FontSize="36"
+                FontAttributes="Bold"
+                    HeightRequest="150"
+                    WidthRequest="200"
+                    HorizontalOptions = "Center"
+                    VerticalOptions = "Center"
+                    BackgroundColor="LightGray"
+                    BorderColor="#D62828" >
+            </Button>
+            <!--Label for wrong item tapped-->
+            <Label
+                    FontSize="36"
+                    Text = "If this is not the item you intend on scanning:"
+                    HorizontalOptions = "Center"
+                    VerticalOptions = "Center"
+                    Padding="50">
+            </Label>
+            <!--Button to take us back to our OrderListView page-->
+            <Button  
+                    x:Name = "btnBack"
+                    Text = "Back"
+                    FontSize="24"
+                HeightRequest="100"
+                WidthRequest="150"
+                FontAttributes="Bold"
+                    HorizontalOptions = "Center"
+                    VerticalOptions = "Center"
+                    BackgroundColor="LightGray"
+                    BorderColor="#D62828">
+            </Button>
+        </FlexLayout>
     </ContentPage.Content>
 </ContentPage>

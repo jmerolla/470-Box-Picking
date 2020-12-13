@@ -8,8 +8,8 @@
 
   <Identity
     Name="90ac8ede-3c1c-4bac-95cd-27ee26290d61"
-    Publisher="CN=ded4f01c-2c0b-4bad-a868-271a51b34a25"
-    Version="1.0.0.0" />
+    Publisher="CN=BoxGang"
+    Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="ec0cc741-fd3e-485c-81be-68815c480690" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
