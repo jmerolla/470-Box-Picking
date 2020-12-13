@@ -1,7 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using ZXing.Net.Mobile.Forms;
+﻿using Xamarin.Forms;
 
 namespace MobileScanApp
 {
@@ -10,11 +7,7 @@ namespace MobileScanApp
         public App()
         {
             InitializeComponent();
-
             MainPage = new NavigationPage(new MainPage());
-            //ScanPage = new ZXingScannerPage();
-            // Navigate to our scanner page
-            //await Navigation.PushAsync(ScanPage);
         }
 
         protected override void OnStart()

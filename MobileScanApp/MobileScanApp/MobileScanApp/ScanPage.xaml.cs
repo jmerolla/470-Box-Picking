@@ -13,7 +13,7 @@ namespace MobileScanApp
      *  @summary:
      *
      *  This class will hold the scanner functionality. Takes in a list
-     *  created by our OrderSheet, and tells us how many scans we have 
+     *  created by our order list, and tells us how many scans we have 
      *  remaining after each successful scan. A successful scan happens 
      *  when the barcode scanned matches the barcode number from the
      *  OrderItem.
@@ -48,9 +48,9 @@ namespace MobileScanApp
 
             /**
              *  var "options" allows you to choose what options you want your scanner to
-             * allow. Currently using it to AutoRotate and to "TryHarder" which 
+             * allow. Currently using it to AutoRotate. Another option, "TryHarder", 
              * gets or sets a flag which cause a deeper look into the bitmap.This
-             * just makes it so the camera focuses on the barcode quicker. Though it
+             * just makes it so the camera focuses on the barcode quicker, though it
              * does add room for misscans. 
              */
             var options = new MobileBarcodeScanningOptions
@@ -69,8 +69,6 @@ namespace MobileScanApp
 
             /*
              * Overlay sets our top and bottom texts, these texts will change once we scan items.
-             * The default overlay also provides us with the two shaded areas of the screen as
-             * well as the red line drawn across the screen to show where to scan the barcode.
              */
             var overlay = new ZXingDefaultOverlay
             {
@@ -107,15 +105,14 @@ namespace MobileScanApp
             {
                 scanPage = new ZXingScannerPage(options, overlay);
 
-                overlay.FlashButtonClicked += (t, ed) =>
+                overlay.FlashButtonClicked += (t, ed) => //Can be removed if target device has no flash capability
                 {
                     scanPage.ToggleTorch(); //If flash button is clicked it will toggle on/off.
                 };
 
-            ///This button is only able to be clicked one time.
             EnterQtyToScan.Clicked += async (w, q) =>
             {
-                EnteredQtyBool = true; //we pressed the "enter quantity to scan button
+                EnteredQtyBool = true; //we pressed the "enter quantity to scan" button
                 while (tempEnteredAmount > scannableItem.QtyOrdered || tempEnteredAmount == -1) //while the amount we entered is greater than qtyOrdered or has not been entered yet.
                 {
                     //Prompt that will have us enter the quantity we wish to scan at once
@@ -142,14 +139,14 @@ namespace MobileScanApp
                         }
                         if (tempEnteredAmount == remainingScans) //if it equals our qty ordered we must display an error
                         {
-                            await DisplayAlert("Error", "Amount entered must be one less than quantity ordered.", "OK");
+                            await DisplayAlert("Error", "Amount entered must be at least one less than quantity ordered.", "OK");
                             tempEnteredAmount = -1;
                         }
                     }
                     catch
                     {
                         //If the number is a decimal we display an Error message.
-                        await DisplayAlert("Error", "Invalid entry, must enter a whole number.", "OK");
+                        await DisplayAlert("Error", "Invalid entry: entry must be a whole number.", "OK");
                     }
                 }
                 RemainingScans(); //After we leave our while loop we call our method to update our variables.
@@ -181,7 +178,7 @@ namespace MobileScanApp
                             }
                             else
                             {
-                                await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString() + " , " + " Barcode does NOT match the one from the Order List.", "OK"); //Every barcode scanned that does not match will display as an alert.
+                                await DisplayAlert("Scanned Barcode", result.Text + " , " + result.BarcodeFormat + " ," + result.ResultPoints[0].ToString() + " , " + " Barcode does NOT match that of the selected item.", "OK"); //Every barcode scanned that does not match will display as an alert.
                             }
                             scanPage.IsAnalyzing = true; //Allows us to scan again once we "ok" the popup.
                             _isScanning = true; //Allows us to be able to reenter our if() statement.

@@ -8,7 +8,6 @@ using Xamarin.Forms.Xaml;
 namespace MobileScanApp
 {
     //Added headings to the listview in OrderListView.xaml
-    //TODO: Qty opened not appearing    
     //Edited: 10/25/20 by Spencer Dusi
     [XamlCompilation(XamlCompilationOptions.Compile)]
 
@@ -20,16 +19,13 @@ namespace MobileScanApp
         /// @author Jess Merolla
         /// @date   9/30/2020
         /// <summary>
-        /// Passes in a string of csv data and parse it to populate a list of order items
+        /// Passes in a list of order items to be displayed
         /// </summary>
-        /// <param name="csvdata">String holding the csv data</param>
+        /// <param name="OrderItems">List holding the order data</param>
         public OrderListView(List<OrderItem> OrderItems)
         {
             InitializeComponent();
             this.OrderItems = OrderItems;
-            //This is a fake example using my deoderant barcode
-            //REMOVE THESE WHEN TESTING IS DONE!!!
-            //SAMPLE ITEMS FOR SCANNING
             /*
             //Graham's package of nails
             OrderItems.Add(new OrderItem
@@ -59,7 +55,7 @@ namespace MobileScanApp
             {
                 Boolean allPacked = true;
                 MyListView.ItemsSource = null; //Moved itemsource here from onTimerElapsed.
-                MyListView.ItemsSource = myCol;//keep comment for bug
+                MyListView.ItemsSource = myCol;//Must be set to null and then reset back to myCol for list to update properly
 
                 foreach (var items in myCollection)
                 {
@@ -77,13 +73,6 @@ namespace MobileScanApp
             });
         }
 
-        /*
-         * Once our timer runs out call this method that refreshes our table to 
-         * myCollection and disable the timer from restarting so it does not keep refreshing.
-         * 
-         *  TODO: (@author Jess) add a check to see if scanning is complete for all items and then return to main page
-         */
-
         /// <summary>
         /// Navigates back to the main page to select a new Order file
         /// </summary>
@@ -92,19 +81,19 @@ namespace MobileScanApp
             try
             {
                 await Navigation.PopAsync();    //return to MainPage.xaml.cs
-                //await Navigation.PushAsync(new MainPage());
             }
             catch (Exception f)
             {
                 await DisplayAlert("Return to MainPage failed", f.Message, "OK");
             }
         }
+
         /// <summary>
         /// 
         /// @author Jess Merolla, Graham Hallman-Taylor
         /// @date 9/30/2020
         /// 
-        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new 
+        /// When an OrderItem is tapped, that OrderItem's contents are sent to a new ScanPage
         /// 
         /// </summary>
         /// <param name="sender">Used to access the currently selected OrderItem</param>

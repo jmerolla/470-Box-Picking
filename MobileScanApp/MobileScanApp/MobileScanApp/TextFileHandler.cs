@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-using Xamarin.Forms;
-using ZXing.QrCode.Internal;
 
 namespace MobileScanApp
 {
@@ -12,9 +8,9 @@ namespace MobileScanApp
     /// @author Jess Merolla
     /// @date 10/15/2020
     /// 
-    /// Methods for extracting CSV data and turning that data into OrderItems
+    /// Methods for extracting order data and turning that data into OrderItems
     /// </summary>
-   class TextFileHandler
+    class TextFileHandler
     {
         /// <summary>
         /// @author Jess Merolla
@@ -43,11 +39,10 @@ namespace MobileScanApp
         /// <summary>
         /// @author Jess Merolla
         /// @date 10/15/2020
-        /// Takes a string holding csv data and returns a string
-        /// with the information unrelated to the items ordered removed
+        /// Parses out the excess text found after all OrderItems are located
         /// </summary>
-        /// <param name="orderText">The string holding all CSV data</param>
-        /// <returns>The trimmed string of CSV data</returns>
+        /// <param name="orderText">The string holding all order data</param>
+        /// <returns>The trimmed string of order data</returns>
         public String removeEndOfOrder(String orderText)
         {
             int matchInt = 1;
@@ -71,10 +66,9 @@ namespace MobileScanApp
         /// 
         /// Extracts the header information and then removes it from the string of order text
         /// 
-        /// TODO Needs to extract the header and do something with it - waiting on Bill
         /// </summary>
-        /// <param name="orderText"></param>
-        /// <returns></returns>
+        /// <param name="orderText">The original string including all order data along with the header</param>
+        /// <returns name="orderText">The string of order data with the header removed</returns>
         public String removeHeaderInfo(String orderText)
         {
             //Remove all unnecessary header data
@@ -103,7 +97,7 @@ namespace MobileScanApp
         ///        -Create constants for the different locations referenced in ItemsList
         /// </summary>
         /// <param name="ItemsList"></param>
-        /// <returns></returns>
+        /// <returns name="OrderItems">The list of order items</returns>
         public List<OrderItem> parseOrderItemsFromList(List<string> ItemsList)
         {
             List<OrderItem> OrderItems = new List<OrderItem>();

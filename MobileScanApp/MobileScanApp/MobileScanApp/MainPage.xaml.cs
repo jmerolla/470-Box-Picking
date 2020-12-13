@@ -1,22 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Essentials;
 using Plugin.FilePicker;
 using Plugin.FilePicker.Abstractions;
 using PCLStorage;
-using CsvHelper;
 using System.IO;
-using ZXing;
-using System.Globalization;
-using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
-using System.Security.Cryptography.X509Certificates;
-using Xamarin.Forms.PlatformConfiguration.AndroidSpecific;
 
 namespace MobileScanApp
 {
@@ -37,20 +27,16 @@ namespace MobileScanApp
         string fileName;
         IFile file;
         String orderHeader; //holds the non-item information from the order file
-        String csvdata;     //make the csv info globally accessible
+        String orderData;//make the info globally accessible
         List<String> ItemsList = new List<String>();
 
-        TextFileHandler orderItemParser = new TextFileHandler();    //used to parse the csv order sheets
+        TextFileHandler orderItemParser = new TextFileHandler();    //used to parse the order sheets
         public List<OrderItem> OrderItems { get; set; } //used to pass the list of items
         public MainPage()
         {
             InitializeComponent();
             var mainDisplayInfo = DeviceDisplay.MainDisplayInfo;
-
             createLogFile();
-
-           
-
         }
 
         /// <summary>
@@ -69,7 +55,6 @@ namespace MobileScanApp
             fileName = Path.Combine(Environment
              .GetFolderPath(Environment.SpecialFolder.LocalApplicationData), dateName);
 
-           
             bool doesExist = File.Exists(fileName);
             if (doesExist == true)  //file exists, grab it
             {
@@ -87,7 +72,6 @@ namespace MobileScanApp
             else
             {
                 //file doesn't exist, create it
-
                 {
                     try
                     {
@@ -102,9 +86,7 @@ namespace MobileScanApp
 
                 }
             }
-
         }
-
 
         /*
          * @author: Jess Merolla
@@ -116,7 +98,7 @@ namespace MobileScanApp
          *
          *@param: object sender, EventArgs e
          * 
-         * Graham added a call to ReadInCSV at the end of this method 9/27/2020 
+         * Graham added a call to ReadInTXT at the end of this method 9/27/2020 
          * 
          */
         private async void PickFileButton_Clicked(object sender, EventArgs e)
@@ -125,16 +107,10 @@ namespace MobileScanApp
             {
                 //Specifies text file type for each platform
                 string fileType = null;
-                if (Device.RuntimePlatform == Device.Android)
-                {
-                    fileType = "txt";
-                }
                 if (Device.RuntimePlatform == Device.UWP)
                 {
-                  
                     fileType = ".txt";
                 }
-
                 //Opens file picker
                 FileData filedata = await CrossFilePicker.Current.PickFile();
 
@@ -144,9 +120,7 @@ namespace MobileScanApp
                       lbl.Text = "File Type must be .txt";
                     filedata = await CrossFilePicker.Current.PickFile();
                 }
-
-
-                //Prints all values of CSV to console
+                //Prints all values of order data to console
                 if(filedata != null)
 				{
                     lbl.Text = filedata.FileName;
@@ -154,56 +128,44 @@ namespace MobileScanApp
                     if (filedata != null)
                     {
                         lbl.Text = filedata.FileName;
-                        csvdata = ReadInCSV(filedata);
-                        System.Diagnostics.Debug.Write(csvdata);
-                        //lbl.Text = csvdata;
+                        orderData = ReadInTXT(filedata);
+                        System.Diagnostics.Debug.Write(orderData);
                         ConfirmOrderButton.IsVisible = true; //shows our confirm button after we choose a file
                     }
                 }
             }
             catch(Exception ex)
             {
-
                 Console.WriteLine(ex.Message);
             }
         }
         /*
         * @author Graham, Jess
         * 9/27/2020
-        * Reads in a CSV using a given path and gives a full list of values in a List<String>
+        * Reads in a .txt using a given path and gives a full list of values in a List<String>
         * TODO: -pass parse array info into a list of OrderItems and pass those to OrderListView.xaml.cs
         *       -DONE 10/15 -make the parsing stuff into its own class that gets called in the read CSV method
         *       -DONE 10/10 - Jess figure out how to minimize the blank spaces at the end of the array
-        * 
-        * 
         */
-        public String ReadInCSV(FileData filedata)
+        public String ReadInTXT(FileData filedata)
         {
-
             StreamReader reader = new StreamReader(filedata.GetStream());
             string orderText = reader.ReadToEnd();
 
-            orderHeader = orderItemParser.getOrderHeader(orderText);
-           
+            orderHeader = orderItemParser.getOrderHeader(orderText); 
             orderText =  orderItemParser.removeEndOfOrder(orderText);
             orderText = orderItemParser.removeHeaderInfo(orderText);
 
-
             ItemsList = orderText.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).ToList();
+            OrderItems = orderItemParser.parseOrderItemsFromList(ItemsList); 
 
-            OrderItems = orderItemParser.parseOrderItemsFromList(ItemsList);
-            
             return orderText;
         }
 
         /// @author Jessica Merolla
         /// @date 9/29/2020
-        /// 
-        /// 
-        /// !!!!!!!!!!Toggle visibility in xml if csv file has not been picked
-        /// 
         /// <summary>
-        /// Passes the string of csv data into the list view,
+        /// Passes the string of order data into the list view,
         /// logd the curret order being packed into the day's log file
         /// </summary>
         /// <param name="sender"></param>
@@ -211,11 +173,10 @@ namespace MobileScanApp
         private async void ConfirmOrderButton_Clicked(object sender, EventArgs e)
         {
             string appendText = "Order Packed: " + Environment.NewLine + orderHeader
-                 + Environment.NewLine +  csvdata + Environment.NewLine;
+                 + Environment.NewLine +  orderData + Environment.NewLine;
             File.AppendAllText(fileName, appendText);
 
             await Navigation.PushAsync(new OrderListView(OrderItems));
-
         }
     }
 }
