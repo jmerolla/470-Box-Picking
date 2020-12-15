@@ -110,8 +110,9 @@ namespace MobileScanApp
             //ItemNumber - represents the barcode,  originally just {14} characters long,
             //but changed to 10+ for testing purposes
             Regex ItemNumber = new Regex(@"[0-9]{10,}", RegexOptions.Compiled | RegexOptions.Singleline);
-            //ItemName - String name of the item, looks for at least two upper or lowercase letters
-            Regex ItemName = new Regex(@"[a-zA-Z]{2,}", RegexOptions.Compiled | RegexOptions.Singleline);
+            //ItemName - String name of the item, looks for at least two upper or lowercase letters or a string of 4 numbers
+            //This was hardcoded as we were having issues parsing item names that contained multiple words and ended with numbers
+            Regex ItemName = new Regex(@"([a-zA-Z]{2,})|([0-9]{4})", RegexOptions.Compiled | RegexOptions.Singleline);
             //Location - the physical place where the items are held, Example "s01" 
             //looks for one upper or lowercase letter, followed by 1 or more numbers
             Regex Location = new Regex(@"[a-zA-Z]{1}[0-9]+", RegexOptions.Compiled | RegexOptions.Singleline);
@@ -142,13 +143,24 @@ namespace MobileScanApp
 
                             j++;
                         }
-                
+
+                        //Parsing for multi-word item names
+                        String NameOfItem = "";
+                        while (ItemName.IsMatch(ItemsList[j])==true)
+						{
+                            NameOfItem += ItemsList[j]+" ";
+                            j++;
+						}
+
+
                          try
                          {
                              OrderItems.Add(new OrderItem
                              {
                                  IsPacked = false,
-                                 Name = ItemsList[j] + " " + ItemsList[j+1],
+
+                                 //Name = ItemsList[j] + " " + ItemsList[j+1],
+                                 Name=NameOfItem,
                                  LocationQOH = locationAndQOHString, 
                                  BarcodeID = ItemsList[i+1],
 
